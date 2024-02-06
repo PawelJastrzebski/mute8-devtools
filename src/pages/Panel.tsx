@@ -1,6 +1,7 @@
 import Icon, { GitHubLink } from '../components/Icon'
 import TopBar from '../components/TopBar'
 import SideBar from '../components/panel/SideBar'
+import Timeline from '../components/panel/Timeline'
 import TimelineTopControls from '../components/panel/TimelineTopControls'
 
 export default function Panel() {
@@ -18,6 +19,7 @@ export default function Panel() {
                 <SideBar />
 
             </div>
+            <Timeline />
         </>
     )
 }

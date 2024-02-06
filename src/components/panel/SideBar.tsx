@@ -2,7 +2,7 @@ import { createSignal } from "solid-js"
 import "./SideBar.scss"
 
 function SwitchButton(props: { color: string }) {
-    const [isActive, setActive] = createSignal(true)
+    const [isActive, setActive] = createSignal(false)
 
     return (
         <div

@@ -1,0 +1,36 @@
+
+
+#timeline {
+    height: 100px;
+    width: 100%;
+    background-color: var(--bg-color-dark);
+    border-bottom: 4px solid var(--main-color);
+    position: relative;
+
+    .pointer{
+        position: absolute;
+        left: 100px;
+        height: 100%;
+        width: 2px;
+        background-color: white;
+
+        &::before {
+            content: "";
+            top: -20px;
+            left: -10px;
+            height: 21px;
+            width: 21px;
+            border-radius: 20px;
+            background-color: white;
+            position: absolute;
+            cursor: pointer;
+            outline: 4px solid transparent;
+            transition: 300ms;
+
+        }
+
+        &.active::before {
+            outline: 4px solid var(--main-color);
+        }
+    }
+}
