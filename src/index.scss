@@ -1,5 +1,7 @@
 :root {
   --main-color: #FF004C;
+  --main-color-dark: #d3003f;
+  --main-color-darkest: #b30036;
 
   --bg-color: #1B1B1D;
   --bg-color-dark: #1E1E1E;
@@ -9,6 +11,7 @@
   --border-radious: 15px;
   --logo-dark: url("https://paweljastrzebski.github.io/mute8/img/logo-dark.svg");
   --logo-light: url("https://paweljastrzebski.github.io/mute8/img/logo-light.svg");
+  --main-gradient: linear-gradient(0deg, #db0042 0%, #FF004C 100%);
 }
 
 * {
@@ -49,6 +52,10 @@ body {
   display: flex;
   cursor: pointer;
   transition: 200ms;
+
+  &.flip-x {
+    transform: rotateZ(180deg);
+  }
 
   &:hover {
     opacity: .75;
