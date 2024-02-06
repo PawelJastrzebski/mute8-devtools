@@ -1,0 +1,22 @@
+{
+  "name": "mute8-devtools",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "vite --port 4030",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "mute8-solid": "file:../x-js/packages/mute8-solid",
+    "solid-js": "^1.8.7"
+  },
+  "devDependencies": {
+    "sass": "^1.70.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vite-plugin-solid": "^2.8.0"
+  }
+}
