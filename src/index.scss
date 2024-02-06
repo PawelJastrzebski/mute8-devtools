@@ -38,3 +38,23 @@ body {
     flex: 1;
   }
 }
+
+
+.icon {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  cursor: pointer;
+  transition: 200ms;
+
+  &:hover {
+    opacity: .75;
+  }
+
+  > * {
+    margin: auto;
+  }
+}

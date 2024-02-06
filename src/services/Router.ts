@@ -18,7 +18,8 @@ export const useView = () => router.solid.useOne("view");
 export const navigate = (view: View) => router.actions.navigate(view);
 
 (() => {
-    if (clientController.isConnected) {
+    // todo !!!
+    // if (clientController.isConnected) {
         navigate("panel")
-    }
+    // }
 })()
