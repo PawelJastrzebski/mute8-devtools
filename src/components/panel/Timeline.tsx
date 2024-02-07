@@ -15,7 +15,6 @@ window.addEventListener("mousemove", (event: MouseEvent) => {
     if (isActive && (x < -200 || x  > width + 200 || fromBottom > 300)) {
         setActive(false)
     }
-    console.log("x")
 })
 
 window.addEventListener('mouseup', () => setActive(false))
@@ -25,7 +24,7 @@ function Timeline() {
     return (
         <div id="timeline">
             <div
-                onMouseDown={() => !active() && (setActive(true) && console.log("1"))}
+                onMouseDown={() => !active() && (setActive(true))}
                 onMouseUp={() => active() && setActive(false)}
                 style={`left: ${x()}px`}
                 class={`pointer ${(active() ? "active": "")}`}

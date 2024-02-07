@@ -1,9 +1,14 @@
+import { WindowDialog } from "cors-window"
+
 class ClientController {
-    readonly isConnected: boolean = false;
-    private opener: Window;
+    readonly dialog = new WindowDialog("devtools")
     constructor() {
-        this.opener = window.opener;
-        this.isConnected = !!this.opener;
+        this.dialog.onMessage = (msg) => {
+            console.log(msg)
+        }
+        setInterval(() => {
+            this.dialog.post({test: "OK"})
+        }, 1500)
     }
 }
 

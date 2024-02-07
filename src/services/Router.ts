@@ -1,5 +1,5 @@
 import { newStore } from "mute8-solid"
-import { clientController } from "./ClientConnector";
+// import { clientController } from "./ClientConnector";
 
 
 type View = "home" | "panel"
