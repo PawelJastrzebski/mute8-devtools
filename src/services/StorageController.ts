@@ -26,19 +26,23 @@ export const storageList = newStore({
     }
 })
 
-const createStorageStats = () => {
+const createStorageStore = () => {
     return newStore({
         value: {
             events: 0,
+            selected: false
         },
         actions: {
             incrementEventsCount(value = 1) {
                 this.events = this.events + value
+            },
+            setSelected(selected: boolean) {
+                this.selected = selected;
             }
         }
     })
 }
-type StatsStore = ReturnType<typeof createStorageStats>;
+type StatsStore = ReturnType<typeof createStorageStore>;
 
 // Logic
 interface InitStateEvent {
@@ -58,7 +62,7 @@ class Storage {
     label: string
     showOnTimeline: boolean
     events: Array<Event> = []
-    statsStore: StatsStore = createStorageStats()
+    store: StatsStore = createStorageStore()
     constructor(label: string) {
         this.label = label;
         this.showOnTimeline = false;
@@ -67,6 +71,7 @@ class Storage {
 
 class StorageController {
     storagesRegistry: Map<string, Storage> = new Map();
+    selected: Storage | null = null;
     resetState() {
         this.storagesRegistry = new Map()
         storageList.actions.updateAll(this.storagesRegistry)
@@ -94,7 +99,7 @@ class StorageController {
             state: data.state
         }
         storage.events.push(event)
-        storage.statsStore.actions.incrementEventsCount()
+        storage.store.actions.incrementEventsCount()
     }
     pushChnageState(data: Types.ChangeState) {
         const storage = this.getOrCreateStorage(data.storageLabel);
@@ -104,13 +109,18 @@ class StorageController {
             newState: data.newState
         }
         storage.events.push(event)
-        storage.statsStore.actions.incrementEventsCount()
+        storage.store.actions.incrementEventsCount()
     }
-    public getStatsStore(label: string): StatsStore {
-        const storage = this.getOrCreateStorage(label);
-        return storage.statsStore
+    public getStore(label: string): StatsStore {
+        return this.getOrCreateStorage(label).store
     }
-
+    select(label: string | null) {
+        const l = label ?? "";
+        if(this.selected?.label == l) return;
+        this.selected?.store.actions.setSelected(false)
+        this.selected = this.storagesRegistry.get(l) ?? null
+        this.selected?.store.actions.setSelected(true)
+    }
     filter(phrase: string): void {
         storageList.actions.filter(phrase)
     }

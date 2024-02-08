@@ -18,13 +18,14 @@ function SwitchButton(props: { color: string }) {
     )
 }
 
-function StorageListItem(props: { label: string, showOntimeline: boolean }) {
-    const [events,] = storageController.getStatsStore(props.label).solid.useOne("events")
-
+function StorageListItem(props: { label: string, showOntimeline: boolean, onSelect: (label: string) => void }) {
+    const store = storageController.getStore(props.label);
+    const [events,] = store.solid.useOne("events")
+    const [selected,] = store.solid.useOne("selected")
     return (
-        <div class="storage-instance">
+        <div classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
-                <div class="label"> {props.label}</div>
+                <div onclick={() => props.onSelect(props.label)} class="label"> {props.label}</div>
                 <SwitchButton color="#7700aa" />
             </div>
             <div class="stats">
@@ -35,21 +36,25 @@ function StorageListItem(props: { label: string, showOntimeline: boolean }) {
 }
 
 function SideBar() {
-    const [list,] = storageList.solid.useOne("list")
-    const [filter,] = storageList.solid.useOne("filterPhrase")
+    const [list,] = storageList.solid.use()
     const components = createMemo(() => {
-        const phrase = filter().toLocaleLowerCase();
-        return list()
-            .filter(storage => storage.label.toLocaleLowerCase().startsWith(phrase))
+        const store = list()
+        return store.list
+            .filter(storage => storage.label.toLocaleLowerCase().startsWith(store.filterPhrase))
             .map(storage => {
-                return (<StorageListItem label={storage.label} showOntimeline={storage.showOnTimeline} />)
+                return (
+                    <StorageListItem
+                        onSelect={(l) => storageController.select(l)}
+                        label={storage.label}
+                        showOntimeline={storage.showOnTimeline}
+                    />)
             })
     })
     return (
         <div id="side-bar">
             <div class="filter">
                 <Icon iconName='search' size={24} />
-                <input onKeyDown={(e) => storageController.filter((e.target as any).value)} placeholder="Search"></input>
+                <input onkeyup={(e) => storageController.filter((e.target as any).value)} placeholder="Search"></input>
             </div>
             <div class="items">
                 {components()}
