@@ -3,6 +3,7 @@ import TopBar from '../components/TopBar'
 import SideBar from '../components/panel/SideBar'
 import Timeline from '../components/panel/Timeline'
 import TimelineTopControls from '../components/panel/TimelineTopControls'
+import { clientController } from '../services/ClientConnector'
 
 export default function Panel() {
     return (
@@ -10,7 +11,7 @@ export default function Panel() {
             <TopBar>
                 <TimelineTopControls />
                 <div style="display: flex">
-                    <Icon onClick={() => window.location.reload()} iconName='refresh' size={32} />
+                    <Icon onClick={() => clientController.sendCommand("refresh-host")} iconName='refresh' size={32} />
                     <GitHubLink />
                 </div>
             </TopBar>
