@@ -1,9 +1,9 @@
 .switch {
-    width: 36px;
-    height: 19px;
-    background-color: rgb(56, 56, 56) ;
+    width: 40px;
+    height: 23px;
+    background-color: rgb(56, 56, 56);
     border-radius: 15px;
-    padding: 3px 4px;
+    padding: 4px 4px;
     cursor: pointer;
     transition: 200ms;
 
@@ -13,16 +13,17 @@
 
     &.switch-off {
         background-color: #464646 !important;
-        > div {
-            transform: translateX(14px);
-    
+
+        >div {
+            transform: translateX(16px);
+
         }
     }
 
-    > div {
+    >div {
         transition: 200ms;
-        height: 14px;
-        width: 14px;
+        height: 16px;
+        width: 16px;
         border-radius: 15px;
         background-color: white;
     }
@@ -33,20 +34,69 @@
     height: 100%;
     border-right: 1px solid rgba(128, 128, 128, 0.089);
     padding: 10px 8px;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
 
-    .storage-instance {
-        min-height: 40px;
-        background-color: var(--gray-color);
-        border-radius: 12px;
-        padding: 15px;
+    .filter {
+        position: relative;
         display: flex;
-        margin-bottom: 8px;
 
-        .label {
-            flex: 1;
-            cursor: default;
+        > input {
+            padding-right: 36px;
+        }
+
+        .icon {
+            position: absolute;
+            right: 0;
+            z-index: 10;
+            opacity: .6;
+            margin-right: 2px;
+            pointer-events: none;
         }
     }
+
+    .items {
+
+        .storage-instance {
+            min-height: 40px;
+            background-color: var(--gray-color);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+
+
+            .top {
+                display: flex;
+                justify-content: space-between;
+
+                .label {
+                    cursor: pointer;
+
+                    transition: 200ms;
+
+                    &:hover {
+                        color: var(--main-color);
+                        text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.151);
+                    }
+                }
+            }
+
+            .stats {
+                font-size: .85rem;
+                padding: 8px 0 0 0;
+                color: #b3b3b3;
+
+                span {
+                    color: var(--main-color-dark);
+                }
+            }
+        }
+
+
+    }
+
 
 
 }
