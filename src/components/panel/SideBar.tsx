@@ -54,7 +54,7 @@ function SideBar() {
         <div id="side-bar">
             <div class="filter">
                 <Icon iconName='search' size={24} />
-                <input onkeyup={(e) => storageController.filter((e.target as any).value)} placeholder="Search"></input>
+                <input onkeyup={(e) => storageController.filter((e.target as any).value)} placeholder="Search store"></input>
             </div>
             <div class="items">
                 {components()}

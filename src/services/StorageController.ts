@@ -1,14 +1,14 @@
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { newStore } from "mute8-solid";
-import { monacoEditor, toJsonPritty } from "./MonacoEditor";
+import { displayEvent, monacoEditor, toJsonPritty } from "./MonacoEditor";
 
 // Event Preview
 export const eventPreview = newStore({
     value: {
-        event: null as Event | null,
+        event: null as StoreEvent | null,
     },
     actions: {
-        setEvent(event: Event | null) {
+        setEvent(event: StoreEvent | null) {
             this.event = event
             console.log(event)
         }
@@ -70,19 +70,19 @@ interface ChangeStateEvent {
     newState: object
 }
 
-type Event = InitStateEvent | ChangeStateEvent
+export type StoreEvent = InitStateEvent | ChangeStateEvent
 
 class Storage {
     label: string
     showOnTimeline: boolean
-    events: Array<Event> = []
+    events: Array<StoreEvent> = []
     store: StatsStore = createStorageStore()
     constructor(label: string) {
         this.label = label;
         this.showOnTimeline = false;
     }
 
-    getEvent(): Event | null {
+    getEvent(): StoreEvent | null {
         // todo sort by timestamp
         return this.events[this.events.length - 1]
     }
@@ -147,13 +147,7 @@ class StorageController {
             this.selected.store.actions.setSelected(true)
             const e = this.selected.getEvent();
             eventPreview.actions.setEvent(e)
-            if(e) {
-                if (e.type == 'change-state') {
-                    monacoEditor.setCode(toJsonPritty(e.newState))
-                } else {
-                    monacoEditor.setCode(toJsonPritty(e.state))
-                }
-            }
+            displayEvent(e)
         }
     }
     filter(phrase: string): void {
