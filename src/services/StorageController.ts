@@ -1,7 +1,20 @@
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { newStore } from "mute8-solid";
 
-// View
+// Event Preview
+export const eventPreview = newStore({
+    value: {
+        event: null as Event | null,
+    },
+    actions: {
+        setEvent(event: Event | null) {
+            this.event = event
+            console.log(event)
+        }
+    }
+})
+
+// SideBar View
 interface StorageListItem {
     label: string
     showOnTimeline: boolean
@@ -67,6 +80,11 @@ class Storage {
         this.label = label;
         this.showOnTimeline = false;
     }
+
+    getEvent(): Event | null {
+        // todo sort by timestamp
+        return this.events[this.events.length - 1]
+    }
 }
 
 class StorageController {
@@ -116,10 +134,18 @@ class StorageController {
     }
     select(label: string | null) {
         const l = label ?? "";
-        if(this.selected?.label == l) return;
-        this.selected?.store.actions.setSelected(false)
+
+        // unselect
+        if (this.selected) {
+            if (this.selected.label == l) return;
+            this.selected.store.actions.setSelected(false)
+        }
+        // select
         this.selected = this.storagesRegistry.get(l) ?? null
-        this.selected?.store.actions.setSelected(true)
+        if (this.selected) {
+            this.selected.store.actions.setSelected(true)
+            eventPreview.actions.setEvent(this.selected.getEvent())
+        }
     }
     filter(phrase: string): void {
         storageList.actions.filter(phrase)

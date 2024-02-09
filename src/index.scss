@@ -29,16 +29,19 @@ html {
 body {
   color: white;
   background: var(--bg-color);
-
 }
 
 #root {
+  height: 100vh;
   display: flex;
+  justify-content: stretch;
+  align-items: stretch;
   flex-direction: column;
-  height: inherit;
 
   .body {
+    height: 0px;
     flex: 1;
+    display: flex;
   }
 }
 
