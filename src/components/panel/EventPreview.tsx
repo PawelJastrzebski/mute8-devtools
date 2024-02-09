@@ -7,24 +7,15 @@ const toJsonPritty = (state: object) => JSON.stringify(state, null, 2);
 function EventPreview() {
     const [event,] = eventPreview.solid.useOne("event")
 
-    const code = createMemo(() => {
-        const e = event();
-        if (!e) return <></>
-
-        if (e.type == 'change-state') {
-            return <>{toJsonPritty(e.newState)}</>
-        } else {
-            return <>{toJsonPritty(e.state)}</>
-        }
-    })
-
     return (
         <div id="event-preview">
             <div class="top"></div>
-            <div class="code">
-                <pre>
+            <div id="code" class="code">
+                {/* <div id="monaco-editor" class="monaco-editor"></div> */}
+
+                {/* <pre>
                     {code()}
-                </pre>
+                </pre> */}
             </div>
         </div>
     )

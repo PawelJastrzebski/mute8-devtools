@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "cors-window": "^0.0.0-alpha.2",
+    "i": "^0.3.7",
+    "monaco-editor": "^0.46.0",
     "mute8-plugins": "file:../x-js/packages/mute8-plugins",
     "mute8-solid": "file:../x-js/packages/mute8-solid",
+    "npm": "^10.4.0",
     "solid-js": "^1.8.7"
   },
   "devDependencies": {

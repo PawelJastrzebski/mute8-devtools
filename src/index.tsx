@@ -6,10 +6,18 @@ import { createMemo } from 'solid-js'
 import { clientController } from './services/ClientConnector'
 import Panel from './pages/Panel'
 import Home from './pages/Home'
+import { monacoEditor } from './services/MonacoEditor'
 
 // Eeager Init
 clientController
+monacoEditor
 
+// vite hot reload
+if (import.meta.hot) {
+    import.meta.hot.on('vite:afterUpdate', () => {
+        setTimeout(() => monacoEditor.init(), 0);
+    });
+}
 
 function Router() {
     const [view,] = useView()

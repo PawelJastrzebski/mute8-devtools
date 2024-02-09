@@ -1,5 +1,6 @@
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { newStore } from "mute8-solid";
+import { monacoEditor, toJsonPritty } from "./MonacoEditor";
 
 // Event Preview
 export const eventPreview = newStore({
@@ -137,14 +138,22 @@ class StorageController {
 
         // unselect
         if (this.selected) {
-            if (this.selected.label == l) return;
+            // if (this.selected.label == l) return;
             this.selected.store.actions.setSelected(false)
         }
         // select
         this.selected = this.storagesRegistry.get(l) ?? null
         if (this.selected) {
             this.selected.store.actions.setSelected(true)
-            eventPreview.actions.setEvent(this.selected.getEvent())
+            const e = this.selected.getEvent();
+            eventPreview.actions.setEvent(e)
+            if(e) {
+                if (e.type == 'change-state') {
+                    monacoEditor.setCode(toJsonPritty(e.newState))
+                } else {
+                    monacoEditor.setCode(toJsonPritty(e.state))
+                }
+            }
         }
     }
     filter(phrase: string): void {
