@@ -12,7 +12,12 @@ export default function Panel() {
             <TopBar>
                 <TimelineTopControls />
                 <div style="display: flex">
-                    <Icon onClick={() => clientController.sendCommand("refresh-host")} iconName='refresh' size={32} />
+                    <Icon
+                        data-tooltip-left="Refresh Application"
+                        onClick={() => clientController.sendCommand("refresh-host")}
+                        iconName='refresh'
+                        size={32}
+                    />
                     <GitHubLink />
                 </div>
             </TopBar>

@@ -62,12 +62,14 @@ type StatsStore = ReturnType<typeof createStorageStore>;
 interface InitStateEvent {
     type: "init-state"
     state: object
+    time: number
 }
 
 interface ChangeStateEvent {
     type: "change-state"
     oldState: object
-    newState: object
+    newState: object,
+    time: number
 }
 
 export type StoreEvent = InitStateEvent | ChangeStateEvent
@@ -115,7 +117,8 @@ class StorageController {
         const storage = this.getOrCreateStorage(data.storageLabel);
         const event: InitStateEvent = {
             type: "init-state",
-            state: data.state
+            state: data.state,
+            time: data.time
         }
         storage.events.push(event)
         storage.store.actions.incrementEventsCount()
@@ -125,7 +128,8 @@ class StorageController {
         const event: ChangeStateEvent = {
             type: "change-state",
             oldState: data.oldState,
-            newState: data.newState
+            newState: data.newState,
+            time: data.time
         }
         storage.events.push(event)
         storage.store.actions.incrementEventsCount()
@@ -133,7 +137,7 @@ class StorageController {
     public getStore(label: string): StatsStore {
         return this.getOrCreateStorage(label).store
     }
-    select(label: string | null) {
+    select(label: string | null = this.selected?.label ?? null) {
         const l = label ?? "";
 
         // unselect

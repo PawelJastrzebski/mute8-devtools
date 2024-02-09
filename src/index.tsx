@@ -8,17 +8,21 @@ import Panel from './pages/Panel'
 import Home from './pages/Home'
 import { monacoEditor } from './services/MonacoEditor'
 import { monacoEditorDiff } from './services/MonacoEditor'
+import { storageController } from './services/StorageController'
 
 // Eeager Init
+storageController
 clientController
 monacoEditor
 
 // vite hot reload
 if (import.meta.hot) {
-    import.meta.hot.on('vite:afterUpdate', () => {
-        setTimeout(() => monacoEditor.init(), 0);
-        setTimeout(() => monacoEditorDiff.init(), 0);
-    });
+    import.meta.hot.on('vite:afterUpdate', () => setTimeout(() => {
+        monacoEditor.init()
+        monacoEditorDiff.init()
+        storageController.select()
+    }, 0)
+    );
 }
 
 function Router() {

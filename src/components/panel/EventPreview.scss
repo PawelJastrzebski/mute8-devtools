@@ -1,12 +1,25 @@
+.wrapper {
+    color: var(--gray-color-light);
+    border: 1px solid var(--gray-color-light);
+    border-radius: 4px;
+    padding: 5px 6px;
+    cursor: pointer;
+}
+
 #event-preview {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-width: 0;
     overflow: hidden;
+    font-size: .9rem;
 
     .top {
         height: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 6px;
     }
 
     .code {

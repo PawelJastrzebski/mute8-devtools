@@ -22,31 +22,45 @@ function getSvgIcon(name: IconsNames, size: number = 24) {
         return (
             <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960" ><path fill="white" d="M800-240v-480h80v480h-80Zm-320 0-57-56 144-144H80v-80h487L424-664l56-56 240 240-240 240Z" /></svg>
         )
-    }    
-    
+    }
+
     if (name == 'pause') {
         return (
-            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960" ><path fill="white"  d="M520-200v-560h240v560H520Zm-320 0v-560h240v560H200Zm400-80h80v-400h-80v400Zm-320 0h80v-400h-80v400Zm0-400v400-400Zm320 0v400-400Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960" ><path fill="white" d="M520-200v-560h240v560H520Zm-320 0v-560h240v560H200Zm400-80h80v-400h-80v400Zm-320 0h80v-400h-80v400Zm0-400v400-400Zm320 0v400-400Z" /></svg>
         )
     }
     if (name == 'paly-circle') {
         return (
-            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960"><path fill="white" d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960"><path fill="white" d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z" /></svg>
         )
-    }    
-    
+    }
+
     if (name == 'search') {
         return (
-            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960"><path fill="#fff" d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960"><path fill="#fff" d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" /></svg>
         )
     }
     return <></>
 }
 
-export default function Icon(props: { iconName: IconsNames, size?: number,  flipX?: boolean, onClick?: () => void }) {
+type Props = {
+    iconName: IconsNames,
+    size?: number,
+    flipX?: boolean,
+    "data-tooltip"?: string
+    "data-tooltip-left"?: string
+    onClick?: () => void
+};
+export default function Icon(props: Props) {
     const icon = getSvgIcon(props.iconName, props.size ?? 24)
     return (
-        <div onClick={props.onClick} class={`icon ${props.iconName}-icon ${(props.flipX ?? false) ? "flip-x" : ""}`}>
+        <div
+            data-tooltip={props["data-tooltip"]}
+            data-tooltip-left={props["data-tooltip-left"]}
+            onClick={props.onClick}
+            class={`icon ${props.iconName}-icon 
+        ${(props.flipX ?? false) ? "flip-x" : ""}`
+            }>
             {icon}
         </div>
     )
