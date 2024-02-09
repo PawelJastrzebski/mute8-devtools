@@ -1,27 +1,35 @@
+import { storageController, topControls } from "../../services/StorageController";
 import Icon from "../Icon"
 import "./TimelineTopControls.scss"
 const iconSize = 26;
 
 
-function ControlsButton(props: { children?: any }) {
+type Props = {
+    children?: any,
+    disabled?: () => boolean
+    onClick?: () => void
+};
+function ControlsButton(props: Props) {
     return (
-        <div class="controls-button">
+        <div onClick={props.onClick} classList={{ "controls-button": true, "disabled": props.disabled?.() }}>
             {props.children}
         </div>
     )
 }
 
 function TimelineTopControls() {
+    const [disableNext,] = topControls.solid.useOne("disableNext")
+    const [disablePrevious,] = topControls.solid.useOne("disablePrevious")
     return (
         <div id="timeline-top-controlls">
-            <ControlsButton>
-                <Icon onClick={() => { }} iconName='keybord-tab' flipX={true} size={iconSize} />
+            <ControlsButton onClick={() => storageController.previousEvent()} disabled={disablePrevious} >
+                <Icon iconName='keybord-tab' flipX={true} size={iconSize} />
             </ControlsButton>
-            <ControlsButton>
-                <Icon onClick={() => { }} iconName='paly-circle' size={iconSize} />
+            <ControlsButton onClick={() => { }}>
+                <Icon iconName='paly-circle' size={iconSize} />
             </ControlsButton>
-            <ControlsButton>
-                <Icon onClick={() => { }} iconName='keybord-tab' size={iconSize} />
+            <ControlsButton onClick={() => storageController.nextEvent()} disabled={disableNext} >
+                <Icon iconName='keybord-tab' size={iconSize} />
             </ControlsButton>
         </div>
     )

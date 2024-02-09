@@ -9,18 +9,20 @@ import Home from './pages/Home'
 import { monacoEditor } from './services/MonacoEditor'
 import { monacoEditorDiff } from './services/MonacoEditor'
 import { storageController } from './services/StorageController'
+import { keyboard } from './services/Keyboard'
 
 // Eeager Init
 storageController
 clientController
 monacoEditor
+keyboard
 
 // vite hot reload
 if (import.meta.hot) {
     import.meta.hot.on('vite:afterUpdate', () => setTimeout(() => {
         monacoEditor.init()
         monacoEditorDiff.init()
-        storageController.select()
+        storageController.selectStore()
     }, 0)
     );
 }

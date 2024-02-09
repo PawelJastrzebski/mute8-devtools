@@ -90,6 +90,8 @@ class MonacoEditor {
 class MonacoEditorDiff {
     monacoDiffNode: HTMLElement | null = null;
     monacoDiff: monaco.editor.IStandaloneDiffEditor | null = null;
+    leftModel: monaco.editor.ITextModel = monaco.editor.createModel("", "json");
+    rightModel: monaco.editor.ITextModel = monaco.editor.createModel("", "json");
     constructor(
         private rootId: string,
         private id: string
@@ -103,18 +105,19 @@ class MonacoEditorDiff {
         this.monacoDiffNode = createMonacoDiv(this.id, root)
         this.monacoDiff = monaco.editor.createDiffEditor(this.monacoDiffNode!, {
             ...commonOptions,
-            originalEditable: false
+            originalEditable: false,
+            diffAlgorithm: "advanced"
         }
         );
+        this.monacoDiff.setModel({
+            original: this.leftModel,
+            modified: this.rightModel,
+        });
     }
     setCode(oldCode: string, newCode: string) {
         if (!this.monacoDiff) return;
-        const originalModel = monaco.editor.createModel(oldCode, "json");
-        const modifiedModel = monaco.editor.createModel(newCode, "json");
-        this.monacoDiff.setModel({
-            original: originalModel,
-            modified: modifiedModel,
-        });
+        this.leftModel.setValue(oldCode)
+        this.rightModel.setValue(newCode)
     }
     setHidden(hide: boolean) {
         hideDiv(this.monacoDiffNode, hide)

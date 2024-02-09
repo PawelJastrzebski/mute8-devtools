@@ -44,7 +44,7 @@ function SideBar() {
             .map(storage => {
                 return (
                     <StorageListItem
-                        onSelect={(l) => storageController.select(l)}
+                        onSelect={(l) => storageController.selectStore(l)}
                         label={storage.label}
                         showOntimeline={storage.showOnTimeline}
                     />)
@@ -55,7 +55,7 @@ function SideBar() {
             <div class="filter">
                 <Icon iconName='search' size={24} />
                 <input
-                    onkeyup={(e) => storageController.filter((e.target as any).value)}
+                    onkeyup={(e) => storageController.filterList((e.target as any).value)}
                     placeholder="Search Store"
                 ></input>
             </div>

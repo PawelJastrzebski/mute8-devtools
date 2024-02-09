@@ -1,6 +1,26 @@
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { newStore } from "mute8-solid";
-import { displayEvent, monacoEditor, toJsonPritty } from "./MonacoEditor";
+import { displayEvent as monacoDisplayEvent } from "./MonacoEditor";
+
+// TopControls
+export const topControls = newStore({
+    value: {
+        selected: false,
+        cursor: 0,
+        total: 0,
+        disableNext: true,
+        disablePrevious: true
+    },
+    actions: {
+        updateStatus(store: Storage | null) {
+            this.selected = !!store
+            this.disableNext = !(store?.hasNext() ?? false)
+            this.disablePrevious = !(store?.hasPrevious() ?? false)
+            this.cursor = (store?.getCursor() ?? -1) + 1
+            this.total = store?.total() ?? 0
+        }
+    }
+})
 
 // Event Preview
 export const eventPreview = newStore({
@@ -10,7 +30,6 @@ export const eventPreview = newStore({
     actions: {
         setEvent(event: StoreEvent | null) {
             this.event = event
-            console.log(event)
         }
     }
 })
@@ -79,14 +98,54 @@ class Storage {
     showOnTimeline: boolean
     events: Array<StoreEvent> = []
     store: StatsStore = createStorageStore()
+    cursor: null | number = null;
+
     constructor(label: string) {
         this.label = label;
         this.showOnTimeline = false;
     }
 
-    getEvent(): StoreEvent | null {
-        // todo sort by timestamp
-        return this.events[this.events.length - 1]
+    total(): number {
+        return this.events.length
+    }
+
+    getLatest(): StoreEvent | null {
+        this.cursor = Math.max(this.events.length - 1, 0)
+        return this.getSelected()
+    }
+
+    getCursor(): number {
+        return this.cursor = this.cursor ?? Math.max(this.events.length - 1, 0)
+    }
+
+    getSelected(): StoreEvent | null {
+        return this.getBy(this.getCursor())
+    }
+
+    hasNext(): boolean {
+        return this.getCursor() < (this.events.length - 1)
+    }
+
+    next(): StoreEvent | null {
+        if (this.hasNext()) {
+            return this.getBy(++this.cursor!)
+        }
+        return null
+    }
+
+    hasPrevious(): boolean {
+        return this.getCursor() > 0
+    }
+
+    previous(): StoreEvent | null {
+        if (this.hasPrevious()) {
+            return this.getBy(--this.cursor!)
+        }
+        return null
+    }
+
+    getBy(index: number): StoreEvent | null {
+        return this.events[index]
     }
 }
 
@@ -94,6 +153,7 @@ class StorageController {
     storagesRegistry: Map<string, Storage> = new Map();
     selected: Storage | null = null;
     resetState() {
+        this.selected = null;
         this.storagesRegistry = new Map()
         storageList.actions.updateAll(this.storagesRegistry)
     }
@@ -133,28 +193,49 @@ class StorageController {
         }
         storage.events.push(event)
         storage.store.actions.incrementEventsCount()
+        topControls.actions.updateStatus(this.selected)
     }
     public getStore(label: string): StatsStore {
         return this.getOrCreateStorage(label).store
     }
-    select(label: string | null = this.selected?.label ?? null) {
+    selectStore(label: string | null = this.selected?.label ?? null) {
         const l = label ?? "";
-
         // unselect
         if (this.selected) {
-            // if (this.selected.label == l) return;
+            if (this.selected.label == l) return;
             this.selected.store.actions.setSelected(false)
         }
         // select
         this.selected = this.storagesRegistry.get(l) ?? null
         if (this.selected) {
             this.selected.store.actions.setSelected(true)
-            const e = this.selected.getEvent();
-            eventPreview.actions.setEvent(e)
-            displayEvent(e)
+            this.selectEvent(this.selected.getSelected())
         }
     }
-    filter(phrase: string): void {
+    selectEvent(event: StoreEvent | null) {
+        eventPreview.actions.setEvent(event)
+        monacoDisplayEvent(event)
+        topControls.actions.updateStatus(this.selected)
+    }
+    nextEvent() {
+        if (!this.selected) return
+        if (this.selected.hasNext()) {
+            this.selectEvent(this.selected.next())
+        }
+    }
+    previousEvent() {
+        if (!this.selected) return
+        if (this.selected.hasPrevious()) {
+            this.selectEvent(this.selected.previous())
+        }
+    }
+    latestEvent() {
+        if (!this.selected) return
+        if (this.selected.hasPrevious()) {
+            this.selectEvent(this.selected.getLatest())
+        }
+    }
+    filterList(phrase: string): void {
         storageList.actions.filter(phrase)
     }
 }
