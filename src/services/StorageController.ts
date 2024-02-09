@@ -1,65 +1,11 @@
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { newStore } from "mute8-solid";
 import { displayEvent as monacoDisplayEvent } from "./MonacoEditor";
+import { topControls } from "../components/panel/TimelineTopControls";
+import { storageList } from "../components/panel/SideBar";
+import { eventPreview } from "../components/panel/EventPreview";
 
-// TopControls
-export const topControls = newStore({
-    value: {
-        selected: false,
-        cursor: 0,
-        total: 0,
-        disableNext: true,
-        disablePrevious: true
-    },
-    actions: {
-        updateStatus(store: Storage | null) {
-            this.selected = !!store
-            this.disableNext = !(store?.hasNext() ?? false)
-            this.disablePrevious = !(store?.hasPrevious() ?? false)
-            this.cursor = (store?.getCursor() ?? -1) + 1
-            this.total = store?.total() ?? 0
-        }
-    }
-})
-
-// Event Preview
-export const eventPreview = newStore({
-    value: {
-        event: null as StoreEvent | null,
-    },
-    actions: {
-        setEvent(event: StoreEvent | null) {
-            this.event = event
-        }
-    }
-})
-
-// SideBar View
-interface StorageListItem {
-    label: string
-    showOnTimeline: boolean
-}
-export const storageList = newStore({
-    value: {
-        filterPhrase: "",
-        list: [] as StorageListItem[]
-    },
-    actions: {
-        updateAll(storagesRegistry: Map<string, Storage>) {
-            this.list = Array.from(storagesRegistry.values()).map(storage => {
-                return {
-                    label: storage.label,
-                    showOnTimeline: storage.showOnTimeline
-                }
-            })
-        },
-        filter(phrase: string) {
-            this.filterPhrase = phrase;
-        }
-    }
-})
-
-const createStorageStore = () => {
+const createListItemStore = () => {
     return newStore({
         value: {
             events: 0,
@@ -75,9 +21,9 @@ const createStorageStore = () => {
         }
     })
 }
-type StatsStore = ReturnType<typeof createStorageStore>;
+type Mute8StoreInstance = ReturnType<typeof createListItemStore>;
 
-// Logic
+// Event Types
 interface InitStateEvent {
     type: "init-state"
     state: object
@@ -90,14 +36,13 @@ interface ChangeStateEvent {
     newState: object,
     time: number
 }
-
 export type StoreEvent = InitStateEvent | ChangeStateEvent
 
-class Storage {
+export class Mute8Storage {
     label: string
     showOnTimeline: boolean
     events: Array<StoreEvent> = []
-    store: StatsStore = createStorageStore()
+    store: Mute8StoreInstance = createListItemStore()
     cursor: null | number = null;
 
     constructor(label: string) {
@@ -150,28 +95,37 @@ class Storage {
 }
 
 class StorageController {
-    storagesRegistry: Map<string, Storage> = new Map();
-    selected: Storage | null = null;
+    storagesRegistry: Map<string, Mute8Storage> = new Map();
+    selected: Mute8Storage | null = null;
+
+    // Utils
+    getMute8ViewStore(label: string): Mute8StoreInstance {
+        return this.getOrCreateStorage(label).store
+    }
+
+    getOrCreateStorage(storageLabel: string): Mute8Storage {
+        const inRegistry = this.storagesRegistry.get(storageLabel)
+        if (!!inRegistry) {
+            return inRegistry
+        }
+        const storage = new Mute8Storage(storageLabel);
+        this.storagesRegistry.set(storageLabel, storage)
+        storageList.actions.updateAll(this.storagesRegistry)
+        return storage
+    }
+
+    // Hanlde Incoming Data
     resetState() {
-        this.selected = null;
         this.storagesRegistry = new Map()
         storageList.actions.updateAll(this.storagesRegistry)
+        this.selectStore(null)
+        this.selectEvent(null)
     }
     addStorageDefs(defs: Types.StorageDefintion[]) {
         for (let def of defs) {
             this.getOrCreateStorage(def.label)
         }
         storageList.actions.updateAll(this.storagesRegistry)
-    }
-    getOrCreateStorage(storageLabel: string): Storage {
-        const inRegistry = this.storagesRegistry.get(storageLabel)
-        if (!!inRegistry) {
-            return inRegistry
-        }
-        const storage = new Storage(storageLabel);
-        this.storagesRegistry.set(storageLabel, storage)
-        storageList.actions.updateAll(this.storagesRegistry)
-        return storage
     }
     pushInitState(data: Types.InitState) {
         const storage = this.getOrCreateStorage(data.storageLabel);
@@ -195,9 +149,8 @@ class StorageController {
         storage.store.actions.incrementEventsCount()
         topControls.actions.updateStatus(this.selected)
     }
-    public getStore(label: string): StatsStore {
-        return this.getOrCreateStorage(label).store
-    }
+
+    // Controls
     selectStore(label: string | null = this.selected?.label ?? null) {
         const l = label ?? "";
         // unselect
@@ -212,7 +165,7 @@ class StorageController {
             this.selectEvent(this.selected.getSelected())
         }
     }
-    selectEvent(event: StoreEvent | null) {
+    private selectEvent(event: StoreEvent | null) {
         eventPreview.actions.setEvent(event)
         monacoDisplayEvent(event)
         topControls.actions.updateStatus(this.selected)

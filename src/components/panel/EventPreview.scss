@@ -20,6 +20,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0 6px;
+        user-select: none;
         
         .stats {
             padding: 5px;
@@ -37,6 +38,7 @@
         flex-direction: column;
         margin-bottom: 3px;
         position: relative;
+        user-select: none;
     }
 }
 

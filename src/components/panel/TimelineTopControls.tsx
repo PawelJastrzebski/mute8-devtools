@@ -1,8 +1,27 @@
-import { storageController, topControls } from "../../services/StorageController";
+import { newStore } from "mute8-solid";
+import { Mute8Storage, storageController } from "../../services/StorageController";
 import Icon from "../Icon"
 import "./TimelineTopControls.scss"
 const iconSize = 26;
 
+export const topControls = newStore({
+    value: {
+        selected: false,
+        cursor: 0,
+        total: 0,
+        disableNext: true,
+        disablePrevious: true
+    },
+    actions: {
+        updateStatus(store: Mute8Storage | null) {
+            this.selected = !!store
+            this.disableNext = !(store?.hasNext() ?? false)
+            this.disablePrevious = !(store?.hasPrevious() ?? false)
+            this.cursor = (store?.getCursor() ?? -1) + 1
+            this.total = store?.total() ?? 0
+        }
+    }
+})
 
 type Props = {
     children?: any,
