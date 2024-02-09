@@ -24,19 +24,22 @@ self.MonacoEnvironment = {
     }
 }
 
-const createDiv = (id: string, root: HTMLElement) => {
+const createMonacoDiv = (id: string, root: HTMLElement) => {
     const div = document.createElement("div")
     div.id = id
+    div.classList.add("monaco-editor")
+    div.classList.add("monaco-hidden")
     root.appendChild(div)
     return div
 }
 
+const hiddenClass = "monaco-hidden";
 const hideDiv = (node: HTMLElement | null, isHidden: boolean) => {
-    if (node) {
-        if (node.hidden != isHidden) {
-            node.hidden = isHidden
-            console.log(isHidden)
-        }
+    if (!node) return
+    if (node.classList.contains(hiddenClass) && !isHidden) {
+        node.classList.remove(hiddenClass)
+    } else if (!node.classList.contains(hiddenClass) && isHidden) {
+        node.classList.add(hiddenClass)
     }
 }
 
@@ -67,11 +70,10 @@ class MonacoEditor {
     init() {
         const root = document.getElementById(this.rootId) as HTMLElement;
         this.monacoEditorNode?.remove()
-        this.monacoEditorNode = createDiv(this.id, root)
+        this.monacoEditorNode = createMonacoDiv(this.id, root)
         this.monacoEditor = monaco.editor.create(this.monacoEditorNode!, {
             ...commonOptions
         })
-        this.setHidden(true)
     }
     setCode(code: string) {
         if (!this.monacoEditor) return;
@@ -86,8 +88,8 @@ class MonacoEditor {
 
 
 class MonacoEditorDiff {
-    monacoEditorNode: HTMLElement | null = null;
-    monacoEditor: monaco.editor.IStandaloneDiffEditor | null = null;
+    monacoDiffNode: HTMLElement | null = null;
+    monacoDiff: monaco.editor.IStandaloneDiffEditor | null = null;
     constructor(
         private rootId: string,
         private id: string
@@ -97,30 +99,29 @@ class MonacoEditorDiff {
 
     init() {
         const root = document.getElementById(this.rootId) as HTMLElement;
-        this.monacoEditorNode?.remove()
-        this.monacoEditorNode = createDiv(this.id, root)
-        this.monacoEditor = monaco.editor.createDiffEditor(this.monacoEditorNode!, {
+        this.monacoDiffNode?.remove()
+        this.monacoDiffNode = createMonacoDiv(this.id, root)
+        this.monacoDiff = monaco.editor.createDiffEditor(this.monacoDiffNode!, {
             ...commonOptions,
-            originalEditable: false,
+            originalEditable: false
         }
         );
-        this.setHidden(true)
     }
     setCode(oldCode: string, newCode: string) {
-        if (!this.monacoEditor) return;
+        if (!this.monacoDiff) return;
         const originalModel = monaco.editor.createModel(oldCode, "json");
         const modifiedModel = monaco.editor.createModel(newCode, "json");
-        this.monacoEditor.setModel({
+        this.monacoDiff.setModel({
             original: originalModel,
             modified: modifiedModel,
         });
     }
     setHidden(hide: boolean) {
-        hideDiv(this.monacoEditorNode, hide)
+        hideDiv(this.monacoDiffNode, hide)
     }
 }
 
-export const monacoEditor = new MonacoEditor("code", "monaco-editor")
+export const monacoEditor = new MonacoEditor("code", "monaco-editor-standard")
 export const monacoEditorDiff = new MonacoEditorDiff("code", "monaco-editor-diff")
 
 export const displayEvent = (event: StoreEvent | null) => {
@@ -136,5 +137,4 @@ export const displayEvent = (event: StoreEvent | null) => {
         monacoEditorDiff.setHidden(false)
         monacoEditorDiff.setCode(toJsonPritty(event.oldState), toJsonPritty(event.newState))
     }
-
 }

@@ -7,6 +7,7 @@ import { clientController } from './services/ClientConnector'
 import Panel from './pages/Panel'
 import Home from './pages/Home'
 import { monacoEditor } from './services/MonacoEditor'
+import { monacoEditorDiff } from './services/MonacoEditor'
 
 // Eeager Init
 clientController
@@ -16,6 +17,7 @@ monacoEditor
 if (import.meta.hot) {
     import.meta.hot.on('vite:afterUpdate', () => {
         setTimeout(() => monacoEditor.init(), 0);
+        setTimeout(() => monacoEditorDiff.init(), 0);
     });
 }
 
