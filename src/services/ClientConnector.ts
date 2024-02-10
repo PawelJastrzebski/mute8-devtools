@@ -3,7 +3,7 @@ import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { storageController } from "./StorageController"
 
 class ClientController {
-    dialog: WindowDialog | null = null
+    dialog: WindowDialog<Types.Payload[]> | null = null
     constructor() {
         setTimeout(() => {
             this.dialog = new WindowDialog("devtools");
@@ -12,24 +12,23 @@ class ClientController {
     }
     handleMessage(list: Types.Payload[]) {
         for (const p of list) {
-            if (p["init"]) {
+            if (p.init) {
                 storageController.resetState()
-                console.log("init")
-            } else if (p["storage-definitions"]) {
-                storageController.addStorageDefs(p["storage-definitions"])
+            } else if (p.storageDefinitions) {
+                storageController.addStorageDefs(p.storageDefinitions)
                 console.log("defs")
-            } else if (p["devtools-options"]) {
-                console.log("options", p["devtools-options"])
-            } else if (p["storage-state-init"]) {
-                storageController.pushInitState(p["storage-state-init"])
-            } else if (p["storage-state-changed"]) {
-                storageController.pushChnageState(p["storage-state-changed"])
+            } else if (p.devtoolsOptions) {
+                console.log("options", p.devtoolsOptions)
+            } else if (p.stateInit) {
+                storageController.pushInitState(p.stateInit)
+            } else if (p.stateChanged) {
+                storageController.pushChnageState(p.stateChanged)
             }
         }
     }
-    sendCommand(type: Types.Payload['host-command']) {
+    sendCommand(type: Types.Payload["hostCommand"]) {
         const payload: Types.Payload = {
-            "host-command": type
+            hostCommand: type
         }
         this.dialog?.post([payload])
     }
