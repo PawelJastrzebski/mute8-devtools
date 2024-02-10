@@ -1,4 +1,4 @@
-import { createMemo, createSignal } from "solid-js"
+import { createMemo, createSignal, onCleanup } from "solid-js"
 import "./SideBar.scss"
 import { Mute8Storage, storageController } from "../../services/StorageController"
 import Icon from "../Icon"
@@ -66,8 +66,8 @@ function SideBar() {
     const components = createMemo(() => {
         const store = list()
         return store.list
-            .filter(storage => storage.label.toLocaleLowerCase().startsWith(store.filterPhrase))
-            .map(storage => {
+            .filter((storage: any) => storage.label.toLocaleLowerCase().startsWith(store.filterPhrase))
+            .map((storage: any) => {
                 return (
                     <StorageListItem
                         onSelect={(l) => storageController.selectStore(l)}

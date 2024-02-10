@@ -9,6 +9,7 @@
   --white-darkest: #b3b3b3;
   --gray-color-light: #4a4c4e;
   --gray-color: #242526;
+  --gray-color-dark: #1a1b1b;
 
   --border-radious: 15px;
   --logo-dark: url("https://paweljastrzebski.github.io/mute8/img/logo-dark.svg");
@@ -137,4 +138,33 @@ input {
 
 [data-tooltip-left] {
   position: relative;
+}
+
+
+// ScrollBar
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 10px;
+  padding: 2px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gray-color-light);
+  border: 0px none #ffffff;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:active {
+  background: var(--main-color-dark);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

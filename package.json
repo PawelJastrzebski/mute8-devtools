@@ -7,14 +7,14 @@
     "start": "npm run dev",
     "dev": "vite --port 4030",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --port 4030"
   },
   "dependencies": {
-    "cors-window": "^0.0.0-alpha.2",
+    "cors-window": "^0.0.0-alpha.3",
     "i": "^0.3.7",
     "monaco-editor": "^0.46.0",
     "mute8-plugins": "file:../x-js/packages/mute8-plugins",
-    "mute8-solid": "file:../x-js/packages/mute8-solid",
+    "mute8-solid": "^0.0.0-alpha.0",
     "npm": "^10.4.0",
     "solid-js": "^1.8.7",
     "time-stamp": "^2.2.0"
