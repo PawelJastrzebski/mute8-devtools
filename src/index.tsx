@@ -25,6 +25,7 @@ if (import.meta.hot) {
         monacoEditorDiff.init()
         storageController.selectStore()
         timelineRender.init()
+        keyboard.init()
     }, 0)
     );
 }

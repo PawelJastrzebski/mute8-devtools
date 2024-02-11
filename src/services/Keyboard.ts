@@ -6,6 +6,7 @@ class Keyboard {
     }
     init() {
         console.log('init key')
+        document.removeEventListener('keydown', this.handleEvent.bind(this))
         document.addEventListener('keydown', this.handleEvent.bind(this))
     }
     handleEvent(event: KeyboardEvent) {

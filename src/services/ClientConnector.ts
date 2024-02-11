@@ -1,6 +1,7 @@
 import { WindowDialog } from "cors-window"
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { storageController } from "./StorageController"
+import { timelineRender } from "./TimelineRender"
 
 class ClientController {
     dialog: WindowDialog<Types.Payload[]> | null = null
@@ -14,6 +15,7 @@ class ClientController {
         for (const p of list) {
             if (p.init) {
                 storageController.resetState()
+                timelineRender.clear()
             } else if (p.storageDefinitions) {
                 storageController.addStorageDefs(p.storageDefinitions)
                 console.log("defs")
