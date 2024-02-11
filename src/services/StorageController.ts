@@ -4,6 +4,7 @@ import { displayEvent as monacoDisplayEvent } from "./MonacoEditor";
 import { topControls } from "../components/panel/TimelineTopControls";
 import { storageList } from "../components/panel/SideBar";
 import { eventPreview } from "../components/panel/EventPreview";
+import { timelineRender } from "./TimelineRender";
 
 const createListItemStore = () => {
     return newStore({
@@ -147,7 +148,10 @@ class StorageController {
         }
         storage.events.push(event)
         storage.store.actions.incrementEventsCount()
-        topControls.actions.updateStatus(this.selected)
+        if (storage.label == this.selected?.label) {
+            topControls.actions.updateStatus(this.selected)
+            timelineRender.addEvent(event)
+        }
     }
 
     // Controls
@@ -163,6 +167,7 @@ class StorageController {
         if (this.selected) {
             this.selected.store.actions.setSelected(true)
             this.selectEvent(this.selected.getSelected())
+            timelineRender.renderAll(this.selected.events)
         }
     }
     private selectEvent(event: StoreEvent | null) {

@@ -10,6 +10,7 @@ import { monacoEditor } from './services/MonacoEditor'
 import { monacoEditorDiff } from './services/MonacoEditor'
 import { storageController } from './services/StorageController'
 import { keyboard } from './services/Keyboard'
+import { timelineRender } from './services/TimelineRender'
 
 // Eeager Init
 storageController
@@ -23,6 +24,7 @@ if (import.meta.hot) {
         monacoEditor.init()
         monacoEditorDiff.init()
         storageController.selectStore()
+        timelineRender.init()
     }, 0)
     );
 }

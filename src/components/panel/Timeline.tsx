@@ -30,6 +30,7 @@ function Timeline() {
                 class={`pointer ${(active() ? "active": "")}`}
             >
             </div>
+            <canvas id="timeline-canvas"></canvas>
         </div>
     )
 }
