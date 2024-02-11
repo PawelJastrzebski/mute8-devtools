@@ -5,7 +5,6 @@ class Keyboard {
         document.addEventListener("DOMContentLoaded", this.init.bind(this));
     }
     init() {
-        console.log('init key')
         document.removeEventListener('keydown', this.handleEvent.bind(this))
         document.addEventListener('keydown', this.handleEvent.bind(this))
     }

@@ -43,10 +43,22 @@ const hideDiv = (node: HTMLElement | null, isHidden: boolean) => {
     }
 }
 
+monaco.editor.defineTheme('mute8-theme', {
+    base: "vs-dark",
+    inherit: true,
+    rules: [],
+    colors: {
+        "editor.background": '#1B1B1D',
+        // "editor.selectionBackground": ''
+        // "diffEditor.insertedTextBackground": '',
+        // "diffEditor.removedTextBackground": ',
+    }
+});
+
 const commonOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     value: "",
     language: 'json',
-    theme: "vs-dark",
+    theme: "mute8-theme",
     scrollBeyondLastLine: true,
     readOnly: true,
     automaticLayout: true,

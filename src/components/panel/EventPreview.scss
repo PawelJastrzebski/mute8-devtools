@@ -21,13 +21,12 @@
         align-items: center;
         padding: 0 6px;
         user-select: none;
-        
+
         .stats {
             padding: 5px;
             color: var(--white-darkest);
             font-size: .95rem;
         }
-
     }
 
     .code {
@@ -42,6 +41,11 @@
     }
 }
 
+
+#monaco-editor-diff {
+    width: calc(100% + 30px); // hide diff scroll
+}
+
 .monaco-editor {
     flex: 1;
     position: absolute;
@@ -52,5 +56,26 @@
     &.monaco-hidden {
         opacity: .001;
         pointer-events: none;
+    }
+
+    --line-green: #1eff00;
+    --line-red: #ff004c;
+
+    .line-insert {
+        background-color: transparent !important;
+        border-left: 4px solid var(--line-green) !important;
+    }
+
+    .char-insert {
+        background-color: #1eff0070 !important;
+    }
+
+    .line-delete {
+        background-color: transparent !important;
+        border-left: 4px solid var(--line-red);
+    }
+
+    .char-delete {
+        background-color: #ff004cb7 !important;
     }
 }
