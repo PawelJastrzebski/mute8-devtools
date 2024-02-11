@@ -63,7 +63,7 @@
 
     .line-insert {
         background-color: transparent !important;
-        border-left: 4px solid var(--line-green) !important;
+        border-left: 1px solid var(--line-green) !important;
     }
 
     .char-insert {
@@ -72,7 +72,7 @@
 
     .line-delete {
         background-color: transparent !important;
-        border-left: 4px solid var(--line-red);
+        border-left: 1px solid var(--line-red);
     }
 
     .char-delete {
