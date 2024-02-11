@@ -15,7 +15,7 @@ export default function Panel() {
                     <Icon
                         data-tooltip-left="Refresh Application"
                         onClick={() => clientController.sendCommand("refresh-host")}
-                        iconName='refresh'
+                        iconName={() => 'refresh'}
                         size={32}
                     />
                     <GitHubLink />

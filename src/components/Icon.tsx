@@ -1,3 +1,5 @@
+import { createMemo } from "solid-js"
+
 type IconsNames = "refresh" | "git" | "start" | "keybord-tab" | "pause" | "paly-circle" | "search"
 
 function getSvgIcon(name: IconsNames, size: number = 24) {
@@ -44,7 +46,7 @@ function getSvgIcon(name: IconsNames, size: number = 24) {
 }
 
 type Props = {
-    iconName: IconsNames,
+    iconName: () => IconsNames,
     size?: number,
     flipX?: boolean,
     "data-tooltip"?: string
@@ -52,16 +54,18 @@ type Props = {
     onClick?: () => void
 };
 export default function Icon(props: Props) {
-    const icon = getSvgIcon(props.iconName, props.size ?? 24)
+    const icon = createMemo(() => {
+        return getSvgIcon(props.iconName(), props.size ?? 24)
+    })
     return (
         <div
             data-tooltip={props["data-tooltip"]}
             data-tooltip-left={props["data-tooltip-left"]}
             onClick={props.onClick}
-            class={`icon ${props.iconName}-icon 
+            class={`icon ${props.iconName()}-icon 
         ${(props.flipX ?? false) ? "flip-x" : ""}`
             }>
-            {icon}
+            {icon()}
         </div>
     )
 }
@@ -71,7 +75,7 @@ export const githubUrl = "https://github.com/PawelJastrzebski/mute8"
 export function GitHubLink() {
     return (
         <a target="_blank" href={githubUrl}>
-            <Icon iconName="git" />
+            <Icon iconName={() => "git"} />
         </a>
     )
 }

@@ -150,6 +150,6 @@ export const displayEvent = (event: StoreEvent | null) => {
     } else if (event.type === 'change-state') {
         monacoEditor.setHidden(true)
         monacoEditorDiff.setHidden(false)
-        monacoEditorDiff.setCode(toJsonPritty(event.oldState), toJsonPritty(event.newState))
+        monacoEditorDiff.setCode(toJsonPritty(event.oldState), toJsonPritty(event.state))
     }
 }

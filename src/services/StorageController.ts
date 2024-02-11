@@ -5,6 +5,7 @@ import { topControls } from "../components/panel/TimelineTopControls";
 import { storageList } from "../components/panel/SideBar";
 import { eventPreview } from "../components/panel/EventPreview";
 import { timelineRender } from "./TimelineRender";
+import { clientController } from "./ClientConnector";
 
 const createListItemStore = () => {
     return newStore({
@@ -34,10 +35,22 @@ interface InitStateEvent {
 interface ChangeStateEvent {
     type: "change-state"
     oldState: object
-    newState: object,
+    state: object,
     time: number
 }
 export type StoreEvent = InitStateEvent | ChangeStateEvent
+
+const setOverride = (store?: Mute8Storage | null, event?: StoreEvent | null) => {
+    if (!store || !event) {
+        clientController.setOverrides({})
+        return
+    }
+    const o: Record<string, object> = {}
+    o[store.label] = {
+        state: event.state
+    }
+    clientController.setOverrides(o)
+}
 
 export class Mute8Storage {
     label: string
@@ -45,6 +58,7 @@ export class Mute8Storage {
     events: Array<StoreEvent> = []
     store: Mute8StoreInstance = createListItemStore()
     cursor: null | number = null;
+    ovverrideMode: boolean = false;
 
     constructor(label: string) {
         this.label = label;
@@ -143,7 +157,7 @@ class StorageController {
         const event: ChangeStateEvent = {
             type: "change-state",
             oldState: data.oldState,
-            newState: data.newState,
+            state: data.newState,
             time: data.time
         }
         storage.events.push(event)
@@ -174,6 +188,9 @@ class StorageController {
         eventPreview.actions.setEvent(event)
         monacoDisplayEvent(event)
         topControls.actions.updateStatus(this.selected)
+        if (this.selected && this.selected.ovverrideMode && event) {
+            setOverride(this.selected, event)
+        }
     }
     nextEvent() {
         if (!this.selected) return
@@ -195,6 +212,16 @@ class StorageController {
     }
     filterList(phrase: string): void {
         storageList.actions.filter(phrase)
+    }
+    toogleOverrideMode() {
+        if (!this.selected) return
+        this.selected.ovverrideMode = !this.selected.ovverrideMode;
+        if (!this.selected.ovverrideMode) {
+            setOverride()
+        } else {
+            setOverride(this.selected, this.selected.getSelected())
+        }
+        topControls.actions.updateStatus(this.selected)
     }
 }
 

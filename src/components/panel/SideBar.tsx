@@ -52,7 +52,7 @@ function StorageListItem(props: { label: string, showOntimeline: boolean, onSele
         <div classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
                 <div onclick={() => props.onSelect(props.label)} class="label"> {props.label}</div>
-                <SwitchButton color="#7700aa" />
+                {/* <SwitchButton color="#7700aa" /> */}
             </div>
             <div class="stats">
                 <span>Events</span> {events()}
@@ -79,7 +79,7 @@ function SideBar() {
     return (
         <div id="side-bar">
             <div class="filter">
-                <Icon iconName='search' size={24} />
+                <Icon iconName={() => 'search'} size={24} />
                 <input
                     onkeyup={(e) => storageController.filterList((e.target as any).value)}
                     placeholder="Search Store"

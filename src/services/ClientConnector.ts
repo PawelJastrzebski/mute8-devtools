@@ -28,11 +28,17 @@ class ClientController {
             }
         }
     }
+
+    setOverrides(overrides: Record<string, Types.OverrideState> | {}) {
+        this.dialog?.post([{
+            stateOverrides: overrides
+        }])
+    }
+
     sendCommand(type: Types.Payload["hostCommand"]) {
-        const payload: Types.Payload = {
+        this.dialog?.post([{
             hostCommand: type
-        }
-        this.dialog?.post([payload])
+        }])
     }
 }
 
