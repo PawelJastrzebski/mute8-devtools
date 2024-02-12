@@ -163,9 +163,10 @@ class StorageController {
         this.selected = this.storagesRegistry.get(l) ?? null
         if (this.selected) {
             this.selected.store.actions.setSelected(true)
-            this.selectEvent(this.selected.getSelected())
-            timelineRender.renderAll(this.selected.events)
         }
+
+        this.selectEvent(this.selected?.getSelected() ?? null)
+        timelineRender.renderAll(this.selected?.events ?? [])
     }
     nextEvent() {
         if (!this.selected) return

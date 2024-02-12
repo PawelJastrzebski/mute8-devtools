@@ -148,13 +148,13 @@ export const eventPreviewDisplay = (event: StoreEvent | null) => {
         monacoEditor.setHidden(true)
         monacoEditorDiff.setHidden(true)
     } else if (event.type === 'init-state') {
+        monacoEditor.setCode(toJsonPritty(event.state))
         monacoEditorDiff.setHidden(true)
         monacoEditor.setHidden(false)
-        monacoEditor.setCode(toJsonPritty(event.state))
     } else if (event.type === 'change-state') {
+        monacoEditorDiff.setCode(toJsonPritty(event.oldState), toJsonPritty(event.state))
         monacoEditor.setHidden(true)
         monacoEditorDiff.setHidden(false)
-        monacoEditorDiff.setCode(toJsonPritty(event.oldState), toJsonPritty(event.state))
     }
 
     eventPreview.actions.setEvent(event)
