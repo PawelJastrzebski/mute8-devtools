@@ -5,6 +5,7 @@ import { topControls } from "../components/panel/TimelineTopControls";
 import { storageList } from "../components/panel/SideBar";
 import { timelineRender } from "./TimelineRender";
 import { overrideController } from "./OverrideController";
+import { dashboardStore } from "../components/panel/Dashboard";
 
 const createListItemStore = () => {
     return newStore({
@@ -140,6 +141,7 @@ class StorageController {
             this.getOrCreateStorage(def.label)
         }
         storageList.actions.updateAll(this.storagesRegistry)
+        dashboardStore.actions.setStoreRegisterd(this.storagesRegistry.size)
     }
     pushStorageEvent(lable: string, event: StoreEvent) {
         const storage = this.getOrCreateStorage(lable);
@@ -149,6 +151,7 @@ class StorageController {
             topControls.actions.updateStatus(this.selected)
             timelineRender.addEvent(newEvent)
         }
+        dashboardStore.actions.incrementEventsCount()
     }
 
     // Controls

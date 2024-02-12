@@ -16,7 +16,8 @@
     &.disabled {
         pointer-events: none;
         svg path {
-            fill: rgba(0, 0, 0, 0.219);
+            fill: var(--gray-color);
+            opacity: .5;
         }
     }
 

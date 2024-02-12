@@ -1,6 +1,6 @@
 import { createMemo } from "solid-js"
 
-type IconsNames = "refresh" | "git" | "start" | "keybord-tab" | "pause" | "paly-circle" | "search" | "close"
+type IconsNames = "refresh" | "git" | "start" | "keybord-tab" | "pause" | "paly-circle" | "search" | "close" | "database" | "monitoring"
 
 function getSvgIcon(name: IconsNames, size: number = 24) {
     if (name == 'refresh') {
@@ -42,10 +42,19 @@ function getSvgIcon(name: IconsNames, size: number = 24) {
             <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960"><path fill="#fff" d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" /></svg>
         )
     }
-
     if (name == 'close') {
         return (
             <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960"><path fill="#fff" d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
+        )
+    }
+    if (name == 'database') {
+        return (
+            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960"><path  fill="#fff" d="M480-120q-151 0-255.5-46.5T120-280v-400q0-66 105.5-113T480-840q149 0 254.5 47T840-680v400q0 67-104.5 113.5T480-120Zm0-479q89 0 179-25.5T760-679q-11-29-100.5-55T480-760q-91 0-178.5 25.5T200-679q14 30 101.5 55T480-599Zm0 199q42 0 81-4t74.5-11.5q35.5-7.5 67-18.5t57.5-25v-120q-26 14-57.5 25t-67 18.5Q600-528 561-524t-81 4q-42 0-82-4t-75.5-11.5Q287-543 256-554t-56-25v120q25 14 56 25t66.5 18.5Q358-408 398-404t82 4Zm0 200q46 0 93.5-7t87.5-18.5q40-11.5 67-26t32-29.5v-98q-26 14-57.5 25t-67 18.5Q600-328 561-324t-81 4q-42 0-82-4t-75.5-11.5Q287-343 256-354t-56-25v99q5 15 31.5 29t66.5 25.5q40 11.5 88 18.5t94 7Z"/></svg>
+        )
+    }    
+    if (name == 'monitoring') {
+        return (
+            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size}  viewBox="0 -960 960 960"><path fill="#fff" d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z"/></svg>
         )
     }
     return <></>

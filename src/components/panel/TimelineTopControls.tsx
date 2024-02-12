@@ -3,7 +3,7 @@ import { newStore } from "mute8-solid";
 import { Mute8Storage, storageController } from "../../services/StorageController";
 import Icon from "../Icon"
 import Button from "../Button";
-const iconSize = 26;
+const iconSize = 22;
 
 type OverrideState = "disabled" | "pause" | "play";
 export const topControls = newStore({
@@ -34,13 +34,15 @@ export const topControls = newStore({
 })
 
 function TimelineTopControls() {
+    const [selectedLable,] = topControls.solid.useOne("selectedLable")
     const [disableNext,] = topControls.solid.useOne("disableNext")
     const [disablePrevious,] = topControls.solid.useOne("disablePrevious")
     const [ovverrideMode,] = topControls.solid.useOne("ovverrideMode")
     const centerIconName = () => ovverrideMode() === 'play' ? 'paly-circle' : "pause"
+    const hidden = () => !selectedLable();
 
     return (
-        <div id="timeline-top-controlls">
+        <div classList={{"hidden": hidden()}} id="timeline-top-controlls">
             <Button onClick={() => storageController.previousEvent()} disabled={disablePrevious} >
                 <Icon iconName={() => 'keybord-tab'} flipX={true} size={iconSize} />
             </Button>

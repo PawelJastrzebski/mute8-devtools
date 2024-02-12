@@ -1,5 +1,5 @@
 import "./EventPreview.scss"
-import { createMemo, Show } from "solid-js"
+import { createMemo } from "solid-js"
 import { storageController, StoreEvent } from "../../services/StorageController"
 import timestamp from "time-stamp"
 import { topControls } from "./TimelineTopControls"
