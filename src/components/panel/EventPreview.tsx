@@ -27,12 +27,12 @@ function MonacoEditorPreview() {
         const e = event()
         if (!e) return null;
 
-        const t = timestamp("HH:mm:ss:ms", new Date(e.time))
+        const t = timestamp("HH:mm:ss ms", new Date(e.time))
         return (
             <div class="event-info">
-                <div data-tooltip="Event Type" class="type-info wrapper">{e.type}</div>
                 <div data-tooltip="Selected/Total" class="stats">{cursor()}/{total()}</div>
-                <div data-tooltip-left="Event Timestamp" class="timestamp wrapper">{t}</div>
+                <div data-tooltip="Event Type" class="type-info wrapper">{e.type}</div>
+                <div data-tooltip="Event Timestamp" class="timestamp wrapper">{t}ms</div>
             </div>
         )
     })

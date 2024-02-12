@@ -14,7 +14,7 @@ export default function Panel() {
                         data-tooltip-left="Refresh Application"
                         onClick={() => hostConnector.sendCommand("refresh-host")}
                         iconName={() => 'refresh'}
-                        size={32}
+                        size={24}
                     />
                 </div>
             </TopBar>

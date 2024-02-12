@@ -13,7 +13,7 @@ import { keyboard } from './services/Keyboard'
 import { timelineRender } from './services/TimelineRender'
 
 export const githubUrl = "https://github.com/PawelJastrzebski/mute8"
-export const homePageUrl = "https://paweljastrzebski.github.io/mute8/"
+export const homePageUrl = "https://paweljastrzebski.github.io/mute8"
 
 // vite hot reload
 if (import.meta.hot) {
