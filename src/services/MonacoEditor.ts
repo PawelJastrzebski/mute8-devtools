@@ -90,9 +90,10 @@ class MonacoEditor {
     }
     setCode(code: string) {
         if (!this.monacoEditor) return;
-        this.monacoEditor.setValue(code)
+        if (this.monacoEditor.getValue() != code) {
+            this.monacoEditor.setValue(code)
+        }
         this.monacoEditor.setScrollPosition({ scrollTop: 0 });
-
     }
     setHidden(hide: boolean) {
         hideDiv(this.monacoEditorNode, hide)
@@ -129,8 +130,10 @@ class MonacoEditorDiff {
     }
     setCode(oldCode: string, newCode: string) {
         if (!this.monacoDiff) return;
-        this.leftModel.setValue(oldCode)
-        this.rightModel.setValue(newCode)
+        if (this.leftModel.getValue() != oldCode || this.rightModel.getValue() != newCode) {
+            this.leftModel.setValue(oldCode)
+            this.rightModel.setValue(newCode)
+        }
     }
     setHidden(hide: boolean) {
         hideDiv(this.monacoDiffNode, hide)

@@ -8,15 +8,21 @@ class Keyboard {
         document.removeEventListener('keydown', this.handleEvent.bind(this))
         document.addEventListener('keydown', this.handleEvent.bind(this))
     }
+
+    getRewindValue(event: KeyboardEvent, value: number) {
+        value = event.ctrlKey ? value * 10 : value;
+        return event.shiftKey ? value * 10 : value
+    }
+
     handleEvent(event: KeyboardEvent) {
-        if(event.code == "ArrowRight") {
-            storageController.nextEvent()
+        if (event.code == "ArrowRight") {
+            storageController.rewindToEvent(this.getRewindValue(event, +1))
         }
-        if(event.code == "ArrowLeft") {
-            storageController.previousEvent()
+        if (event.code == "ArrowLeft") {
+            storageController.rewindToEvent(this.getRewindValue(event, -1))
         }
-        if(event.code == "Space") {
-            storageController.latestEvent()
+        if (event.code == "Space") {
+            storageController.toggleOverride()
         }
     }
 }

@@ -22,7 +22,7 @@ class OverrideController {
 
     setOverride(label: string, enable?: boolean, stateHolder?: StateHolder): void {
         const store = storageController.getOrCreateStorage(label)
-        const eventValue = stateHolder ?? store.getLatest()
+        const eventValue = stateHolder ?? store.getLast()
         const enableValue = enable ?? !store.ovverrideMode;
         if (enableValue && eventValue) {
             this.overrides[label] = { state: eventValue.state }

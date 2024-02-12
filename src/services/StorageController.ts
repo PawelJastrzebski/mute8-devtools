@@ -66,7 +66,12 @@ export class Mute8Storage {
         return this.events.length
     }
 
-    getLatest(): StoreEvent | null {
+    getFirst(): StoreEvent | null {
+        this.cursor = 0;
+        return this.getSelected()
+    }
+
+    getLast(): StoreEvent | null {
         this.cursor = Math.max(this.events.length - 1, 0)
         return this.getSelected()
     }
@@ -76,33 +81,26 @@ export class Mute8Storage {
     }
 
     getSelected(): StoreEvent | null {
-        return this.getBy(this.getCursor())
+        return this.get(0)
     }
 
-    hasNext(): boolean {
-        return this.getCursor() < (this.events.length - 1)
+    has(offset: number): boolean {
+        const next = (this.getCursor() + offset);
+        return next >= 0 && next <= (this.events.length - 1)
     }
 
-    next(): StoreEvent | null {
-        if (this.hasNext()) {
-            return this.getBy(++this.cursor!)
+    get(offset: number): StoreEvent | null {
+        if (this.has(offset)) {
+            this.cursor = this.cursor! + offset;
+            return this.events[this.cursor]
         }
         return null
     }
 
-    hasPrevious(): boolean {
-        return this.getCursor() > 0
-    }
-
-    previous(): StoreEvent | null {
-        if (this.hasPrevious()) {
-            return this.getBy(--this.cursor!)
-        }
-        return null
-    }
-
-    getBy(index: number): StoreEvent | null {
-        return this.events[index]
+    revind(offset: number) {
+        const event = this.get(offset)
+        if (!!event) return event
+        return offset <= 0 ? this.getFirst() : this.getLast()
     }
 }
 
@@ -171,21 +169,23 @@ class StorageController {
     }
     nextEvent() {
         if (!this.selected) return
-        if (this.selected.hasNext()) {
-            this.selectEvent(this.selected.next())
+        if (this.selected.has(+1)) {
+            this.selectEvent(this.selected.get(+1))
         }
     }
     previousEvent() {
         if (!this.selected) return
-        if (this.selected.hasPrevious()) {
-            this.selectEvent(this.selected.previous())
+        if (this.selected.has(-1)) {
+            this.selectEvent(this.selected.get(-1))
         }
+    }
+    rewindToEvent(offset: number) {
+        if (!this.selected) return
+        this.selectEvent(this.selected.revind(offset))
     }
     latestEvent() {
         if (!this.selected) return
-        if (this.selected.hasPrevious()) {
-            this.selectEvent(this.selected.getLatest())
-        }
+        this.selectEvent(this.selected.getLast())
     }
     private selectEvent(event: StoreEvent | null) {
         if (this.selected && this.selected.ovverrideMode && event) {
@@ -199,6 +199,10 @@ class StorageController {
     updateSelectedPreview() {
         eventPreviewDisplay(this.selected?.getSelected() ?? null)
         topControls.actions.updateStatus(this.selected)
+    }
+    toggleOverride() {
+        if (!this.selected) return
+        overrideController.setOverride(this.selected.label)
     }
 }
 
