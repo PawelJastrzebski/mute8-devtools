@@ -1,9 +1,8 @@
-import { topControls } from "../components/panel/TimelineTopControls";
 import { hostConnector, StateOverrides } from "./ClientConnector";
 import { storageController } from "./StorageController";
 
 // StoreEvent or Override
-type StateHollder = { state: object }
+type StateHolder = { state: object }
 
 class OverrideController {
     private overrides: StateOverrides = {}
@@ -21,28 +20,25 @@ class OverrideController {
         return !!this.overrides[label]
     }
 
-    setOverride(label: string, enable?: boolean, event?: StateHollder): void {
+    setOverride(label: string, enable?: boolean, stateHolder?: StateHolder): void {
         const store = storageController.getOrCreateStorage(label)
-        const eventValue = event ?? store.getLatest()
+        const eventValue = stateHolder ?? store.getLatest()
         const enableValue = enable ?? !store.ovverrideMode;
-        console.log(store, enableValue)
         if (enableValue && eventValue) {
             this.overrides[label] = { state: eventValue.state }
-            store.ovverrideMode = true;
-            store.store.actions.setOvveridMode(true)
         } else {
             delete this.overrides[label]
-            store.ovverrideMode = false;
-            store.store.actions.setOvveridMode(false)
         }
 
-        if (storageController.selected && storageController.selected.label == store.label) {
-            topControls.actions.updateStatus(store)
-        }
+        // notify host
         hostConnector.setOverrides(this.overrides)
+
+        // update view
+        store.ovverrideMode = enableValue;
+        store.store.actions.setOveridMode(enableValue)
+        storageController.updateSelectedPreview()
     }
 
 }
-
 
 export const overrideController = new OverrideController();

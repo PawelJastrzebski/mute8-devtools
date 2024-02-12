@@ -3,13 +3,14 @@ import { newStore } from "mute8-solid";
 import { Mute8Storage, storageController } from "../../services/StorageController";
 import Icon from "../Icon"
 import Button from "../Button";
+import { overrideController } from "../../services/OverrideController";
 const iconSize = 26;
 
 type OverrideState = "disabled" | "pause" | "play";
 export const topControls = newStore({
     value: {
         ovverrideMode: "disabled" as OverrideState,
-        selected: false,
+        selectedLable: null as string | null,
         cursor: 0,
         total: 0,
         disableNext: true,
@@ -17,7 +18,7 @@ export const topControls = newStore({
     },
     actions: {
         updateStatus(store: Mute8Storage | null) {
-            this.selected = !!store
+            this.selectedLable = store?.label ?? null;
             this.total = store?.total() ?? 0
             this.disableNext = !(store?.hasNext() ?? false)
             this.disablePrevious = !(store?.hasPrevious() ?? false)
@@ -34,16 +35,21 @@ export const topControls = newStore({
 })
 
 function TimelineTopControls() {
+    const [selectedLable,] = topControls.solid.useOne("selectedLable")
     const [disableNext,] = topControls.solid.useOne("disableNext")
     const [disablePrevious,] = topControls.solid.useOne("disablePrevious")
     const [ovverrideMode,] = topControls.solid.useOne("ovverrideMode")
     const centerIconName = () => ovverrideMode() === 'play' ? 'paly-circle' : "pause"
+
     return (
         <div id="timeline-top-controlls">
             <Button onClick={() => storageController.previousEvent()} disabled={disablePrevious} >
                 <Icon iconName={() => 'keybord-tab'} flipX={true} size={iconSize} />
             </Button>
-            <Button onClick={() => storageController.toogleOverrideMode()} disabled={() => ovverrideMode() == "disabled"} >
+            <Button onClick={() => {
+                const label = selectedLable();
+                label && overrideController.setOverride(label)
+            }} disabled={() => ovverrideMode() == "disabled"} >
                 <Icon iconName={centerIconName} size={iconSize} />
             </Button>
             <Button onClick={() => storageController.nextEvent()} disabled={disableNext} >

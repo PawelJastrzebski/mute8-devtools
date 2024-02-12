@@ -1,9 +1,8 @@
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { newStore } from "mute8-solid";
-import { displayEvent as monacoDisplayEvent } from "./MonacoEditor";
+import { eventPreviewDisplay } from "./MonacoEditor";
 import { topControls } from "../components/panel/TimelineTopControls";
 import { storageList } from "../components/panel/SideBar";
-import { eventPreview } from "../components/panel/EventPreview";
 import { timelineRender } from "./TimelineRender";
 import { overrideController } from "./OverrideController";
 
@@ -15,13 +14,13 @@ const createListItemStore = () => {
             overrided: false
         },
         actions: {
-            incrementEventsCount(value = 1) {
-                this.events = this.events + value
+            setEventsCount(value: number) {
+                this.events = value
             },
             setSelected(selected: boolean) {
                 this.selected = selected;
             },
-            setOvveridMode(overrided: boolean) {
+            setOveridMode(overrided: boolean) {
                 this.overrided = overrided;
             }
         }
@@ -55,6 +54,12 @@ export class Mute8Storage {
     constructor(label: string) {
         this.label = label;
         this.showOnTimeline = false;
+    }
+
+    addEvent(event: StoreEvent): StoreEvent {
+        this.events.push(event)
+        this.store.actions.setEventsCount(this.events.length)
+        return event
     }
 
     total(): number {
@@ -111,6 +116,10 @@ class StorageController {
     }
 
     getOrCreateStorage(storageLabel: string): Mute8Storage {
+        if (this.selected?.label == storageLabel) {
+            return this.selected;
+        }
+
         const inRegistry = this.storagesRegistry.get(storageLabel)
         if (!!inRegistry) {
             return inRegistry
@@ -134,29 +143,13 @@ class StorageController {
         }
         storageList.actions.updateAll(this.storagesRegistry)
     }
-    pushInitState(data: Types.InitState) {
-        const storage = this.getOrCreateStorage(data.storageLabel);
-        const event: InitStateEvent = {
-            type: "init-state",
-            state: data.state,
-            time: data.time
-        }
-        storage.events.push(event)
-        storage.store.actions.incrementEventsCount()
-    }
-    pushChnageState(data: Types.ChangeState) {
-        const storage = this.getOrCreateStorage(data.storageLabel);
-        const event: ChangeStateEvent = {
-            type: "change-state",
-            oldState: data.oldState,
-            state: data.newState,
-            time: data.time
-        }
-        storage.events.push(event)
-        storage.store.actions.incrementEventsCount()
-        if (storage.label == this.selected?.label) {
+    pushStorageEvent(lable: string, event: StoreEvent) {
+        const storage = this.getOrCreateStorage(lable);
+        const newEvent = storage.addEvent(event)
+
+        if (storage.label === this.selected?.label) {
             topControls.actions.updateStatus(this.selected)
-            timelineRender.addEvent(event)
+            timelineRender.addEvent(newEvent)
         }
     }
 
@@ -174,14 +167,6 @@ class StorageController {
             this.selected.store.actions.setSelected(true)
             this.selectEvent(this.selected.getSelected())
             timelineRender.renderAll(this.selected.events)
-        }
-    }
-    private selectEvent(event: StoreEvent | null) {
-        eventPreview.actions.setEvent(event)
-        monacoDisplayEvent(event)
-        topControls.actions.updateStatus(this.selected)
-        if (this.selected && this.selected.ovverrideMode && event) {
-            overrideController.setOverride(this.selected.label, true, event)
         }
     }
     nextEvent() {
@@ -202,12 +187,18 @@ class StorageController {
             this.selectEvent(this.selected.getLatest())
         }
     }
+    private selectEvent(event: StoreEvent | null) {
+        if (this.selected && this.selected.ovverrideMode && event) {
+            overrideController.setOverride(this.selected.label, true, event)
+        }
+        this.updateSelectedPreview()
+    }
     filterList(phrase: string): void {
         storageList.actions.filter(phrase)
     }
-    toogleOverrideMode() {
-        if (!this.selected) return
-        overrideController.setOverride(this.selected.label)
+    updateSelectedPreview() {
+        eventPreviewDisplay(this.selected?.getSelected() ?? null)
+        topControls.actions.updateStatus(this.selected)
     }
 }
 

@@ -25,9 +25,18 @@ class HostConnector {
             } else if (p.devtoolsOptions) {
                 console.log("options", p.devtoolsOptions)
             } else if (p.stateInit) {
-                storageController.pushInitState(p.stateInit)
+                storageController.pushStorageEvent(p.stateInit.storageLabel, {
+                    type: "init-state",
+                    state: p.stateInit.state,
+                    time: p.stateInit.time
+                })
             } else if (p.stateChanged) {
-                storageController.pushChnageState(p.stateChanged)
+                storageController.pushStorageEvent(p.stateChanged.storageLabel, {
+                    type: "change-state",
+                    oldState: p.stateChanged.oldState,
+                    state: p.stateChanged.newState,
+                    time: p.stateChanged.time
+                })
             } else if (p.stateOverrides) {
                 overrideController.setInit(p.stateOverrides)
             }

@@ -5,6 +5,7 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import { StoreEvent } from './StorageController'
+import { eventPreview } from '../components/panel/EventPreview'
 
 self.MonacoEnvironment = {
     getWorker(_, label) {
@@ -139,7 +140,7 @@ class MonacoEditorDiff {
 export const monacoEditor = new MonacoEditor("code", "monaco-editor-standard")
 export const monacoEditorDiff = new MonacoEditorDiff("code", "monaco-editor-diff")
 
-export const displayEvent = (event: StoreEvent | null) => {
+export const eventPreviewDisplay = (event: StoreEvent | null) => {
     if (event == null) {
         monacoEditor.setHidden(true)
         monacoEditorDiff.setHidden(true)
@@ -152,4 +153,6 @@ export const displayEvent = (event: StoreEvent | null) => {
         monacoEditorDiff.setHidden(false)
         monacoEditorDiff.setCode(toJsonPritty(event.oldState), toJsonPritty(event.state))
     }
+
+    eventPreview.actions.setEvent(event)
 }
