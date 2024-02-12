@@ -6,6 +6,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .left-side{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 25px;
+    }
+
+    a.nav-label {
+        font-weight: 600;
+    }
+
 }
 
 #small-logo {
@@ -14,4 +26,5 @@
     background: var(--logo-dark);
     background-size: contain;
     background-repeat: no-repeat;
+    margin-right: 5px;
   }

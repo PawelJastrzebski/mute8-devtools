@@ -12,11 +12,8 @@ import { storageController } from './services/StorageController'
 import { keyboard } from './services/Keyboard'
 import { timelineRender } from './services/TimelineRender'
 
-// Eeager Init
-storageController
-hostConnector
-monacoEditor
-keyboard
+export const githubUrl = "https://github.com/PawelJastrzebski/mute8"
+export const homePageUrl = "https://paweljastrzebski.github.io/mute8/"
 
 // vite hot reload
 if (import.meta.hot) {
@@ -26,6 +23,7 @@ if (import.meta.hot) {
         storageController.selectStore()
         timelineRender.init()
         keyboard.init()
+        hostConnector.init()
     }, 0)
     );
 }

@@ -1,4 +1,5 @@
 import { createMemo } from "solid-js"
+import { githubUrl } from ".."
 
 type IconsNames = "refresh" | "git" | "start" | "keybord-tab" | "pause" | "paly-circle" | "search" | "close" | "database" | "monitoring"
 
@@ -84,8 +85,6 @@ export default function Icon(props: Props) {
         </div>
     )
 }
-
-export const githubUrl = "https://github.com/PawelJastrzebski/mute8"
 
 export function GitHubLink() {
     return (

@@ -2,17 +2,26 @@ import { WindowDialog } from "cors-window"
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { storageController } from "./StorageController"
 import { overrideController } from "./OverrideController";
+import { router } from "./Router";
 
 export type StateOverrides = Record<string, Types.OverrideState>;
 
 class HostConnector {
     dialog: WindowDialog<Types.Payload[]> | null = null
     constructor() {
-        setTimeout(() => {
-            this.dialog = new WindowDialog("devtools");
-            this.dialog.onMessage = (data) => this.handleMessage(data as object[])
-        }, 10)
+        setTimeout(this.init.bind(this), 10)
     }
+
+    init() {
+        console.log(this.dialog)
+
+        if (this.dialog) return;
+
+        this.dialog = new WindowDialog("devtools");
+        this.dialog.onMessage = (data) => this.handleMessage(data as object[])
+        router.actions.setConnected(this.dialog.isOpen())
+    }
+
     handleMessage(list: Types.Payload[]) {
         for (const p of list) {
             if (p.init) {

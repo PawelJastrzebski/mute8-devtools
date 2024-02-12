@@ -42,6 +42,7 @@ body {
   justify-content: stretch;
   align-items: stretch;
   flex-direction: column;
+  border-bottom: 4px solid var(--main-color);
 
   .body {
     height: 0px;
@@ -61,8 +62,12 @@ body {
   width: 40px;
   display: flex;
   cursor: pointer;
-  transition: 200ms;
+  transition: 200ms ease-in-out;
   position: relative;
+
+  > svg {
+    transition: 200ms ease-in-out;
+  }
 
   &.flip-x {
     transform: rotateZ(180deg);
@@ -105,6 +110,18 @@ input {
   border: 1px solid var(--main-color);
   z-index: 99999;
   visibility: hidden;
+}
+
+.nav-label {
+  cursor: pointer;
+  color: rgb(212, 212, 212);
+  text-decoration: none;
+  transition: 200ms ease-in-out;
+
+  &:hover {
+      color: var(--main-color);
+      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.151);
+  }
 }
 
 // tooltip

@@ -40,8 +40,11 @@
             .event-info {
                 flex: 1;
                 display: flex;
-                justify-content: space-between;
+                justify-content: center;
+                gap: 20px;
                 padding-right: 5px;
+                width: 200px;
+
                 .stats {
                     padding: 5px;
                     color: var(--white-darkest);
@@ -52,7 +55,13 @@
             .icon {
                 width: 30px;
                 height: 30px;
-                opacity: .6;
+                opacity: .8;
+            }
+
+            .right-icons{
+                flex-basis: 120px;
+                display: flex;
+                justify-content: flex-end;
             }
         }
 

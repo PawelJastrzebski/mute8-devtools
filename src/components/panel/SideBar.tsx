@@ -5,6 +5,7 @@ import Icon from "../Icon"
 import { newStore } from "mute8-solid"
 import Button from "../Button"
 import { overrideController } from "../../services/OverrideController"
+import { router } from "../../services/Router"
 
 const setFilterPhraseCache = (phrase: string) => localStorage.setItem("-phrase-cache-", phrase);
 const getFilterPhraseCache = () => localStorage.getItem("-phrase-cache-") ?? "";
@@ -58,7 +59,7 @@ function StorageListItem(props: { label: string, showOntimeline: boolean, onSele
     return (
         <div classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
-                <div onclick={() => props.onSelect(props.label)} class="label"> {props.label}</div>
+                <div onclick={() => props.onSelect(props.label)} class="nav-label"> {props.label}</div>
                 {/* <SwitchButton color="#7700aa" /> */}
                 <Button class="gray-button" onClick={() => overrideController.setOverride(props.label)} disabled={() => false} >
                     <Icon iconName={() => overrided() ? "paly-circle" : "pause"} size={20} />
@@ -72,6 +73,7 @@ function StorageListItem(props: { label: string, showOntimeline: boolean, onSele
 }
 
 function SideBar() {
+    const [isConnected,] = router.solid.useOne("isConnected")
     const [list,] = storageList.solid.use()
     const [filterPhrase,] = storageList.solid.useOne("filterPhrase")
     const components = createMemo(() => {
@@ -88,7 +90,7 @@ function SideBar() {
             })
     })
     return (
-        <div id="side-bar">
+        <div classList={{"visible": isConnected()}} id="side-bar">
             <div class="filter">
                 <Icon iconName={() => 'search'} size={24} />
                 <input

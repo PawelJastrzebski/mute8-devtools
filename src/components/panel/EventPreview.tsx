@@ -2,7 +2,7 @@ import "./EventPreview.scss"
 import { createMemo } from "solid-js"
 import { setSelectedMute8StoreCache, storageController, StoreEvent } from "../../services/StorageController"
 import timestamp from "time-stamp"
-import { topControls } from "./TimelineTopControls"
+import TimelineTopControls, { topControls } from "./TimelineTopControls"
 import { newStore } from "mute8-solid"
 import Dashboard from "./Dashboard"
 import Icon from "../Icon"
@@ -45,8 +45,11 @@ function MonacoEditorPreview() {
     return (
         <>
             <div class="top">
+                <TimelineTopControls />
                 {eventInfo()}
-                <Icon size={20} iconName={() => "close"} onClick={onClose} />
+                <div class="right-icons">
+                    <Icon size={20} iconName={() => "close"} onClick={onClose} />
+                </div>
             </div>
             <div id="code" class="code"></div>
         </>

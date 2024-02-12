@@ -35,13 +35,18 @@
     border-right: 1px solid rgba(128, 128, 128, 0.089);
     display: flex;
     flex-direction: column;
+    display: none;
+
+    &.visible {
+        display: block;
+    }
 
     .filter {
         position: relative;
         display: flex;
         padding: 8px;
 
-        > input {
+        >input {
             padding-right: 36px;
         }
 
@@ -79,17 +84,6 @@
             .top {
                 display: flex;
                 justify-content: space-between;
-
-                .label {
-                    cursor: pointer;
-
-                    transition: 200ms;
-
-                    &:hover {
-                        color: var(--main-color);
-                        text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.151);
-                    }
-                }
             }
 
             .stats {

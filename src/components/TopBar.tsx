@@ -1,7 +1,5 @@
+import { githubUrl, homePageUrl } from ".."
 import "./TopBar.scss"
-
-// todo env file;
-export const homePageUrl = "https://paweljastrzebski.github.io/mute8/"
 
 export function Logo() {
     return (
@@ -11,11 +9,14 @@ export function Logo() {
     )
 }
 
-
 function TopBar(props: { children?: any }) {
     return (
         <div id="top-bar">
-            <Logo />
+            <div class="left-side">
+                <Logo />
+                <a href={homePageUrl} target="_blank" class="nav-label">Docs</a>
+                <a href={githubUrl} target="_blank" class="nav-label">GitHub</a>
+            </div>
             {props.children}
         </div>
     )
