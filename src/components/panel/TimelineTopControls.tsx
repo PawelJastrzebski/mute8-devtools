@@ -1,13 +1,14 @@
+import "./TimelineTopControls.scss"
 import { newStore } from "mute8-solid";
 import { Mute8Storage, storageController } from "../../services/StorageController";
 import Icon from "../Icon"
-import "./TimelineTopControls.scss"
-import { createMemo } from "solid-js";
+import Button from "../Button";
 const iconSize = 26;
 
+type OverrideState = "disabled" | "pause" | "play";
 export const topControls = newStore({
     value: {
-        ovverrideMode: "disabled" as "disabled" | "pause" | "play",
+        ovverrideMode: "disabled" as OverrideState,
         selected: false,
         cursor: 0,
         total: 0,
@@ -32,36 +33,22 @@ export const topControls = newStore({
     }
 })
 
-type Props = {
-    children?: any,
-    disabled?: () => boolean
-    onClick?: () => void
-};
-function ControlsButton(props: Props) {
-    return (
-        <div onClick={props.onClick} classList={{ "controls-button": true, "disabled": props.disabled?.() }}>
-            {props.children}
-        </div>
-    )
-}
-
 function TimelineTopControls() {
     const [disableNext,] = topControls.solid.useOne("disableNext")
     const [disablePrevious,] = topControls.solid.useOne("disablePrevious")
     const [ovverrideMode,] = topControls.solid.useOne("ovverrideMode")
-    const disabled = () => ovverrideMode() == "disabled"
-    const centerIconName = createMemo(() => ovverrideMode() === 'play' ? 'paly-circle' : "pause")
+    const centerIconName = () => ovverrideMode() === 'play' ? 'paly-circle' : "pause"
     return (
         <div id="timeline-top-controlls">
-            <ControlsButton onClick={() => storageController.previousEvent()} disabled={disablePrevious} >
+            <Button onClick={() => storageController.previousEvent()} disabled={disablePrevious} >
                 <Icon iconName={() => 'keybord-tab'} flipX={true} size={iconSize} />
-            </ControlsButton>
-            <ControlsButton onClick={() => storageController.toogleOverrideMode()} disabled={disabled} >
+            </Button>
+            <Button onClick={() => storageController.toogleOverrideMode()} disabled={() => ovverrideMode() == "disabled"} >
                 <Icon iconName={centerIconName} size={iconSize} />
-            </ControlsButton>
-            <ControlsButton onClick={() => storageController.nextEvent()} disabled={disableNext} >
+            </Button>
+            <Button onClick={() => storageController.nextEvent()} disabled={disableNext} >
                 <Icon iconName={() => 'keybord-tab'} size={iconSize} />
-            </ControlsButton>
+            </Button>
         </div>
     )
 }

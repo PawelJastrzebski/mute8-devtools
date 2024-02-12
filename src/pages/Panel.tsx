@@ -4,7 +4,7 @@ import EventPreview from '../components/panel/EventPreview'
 import SideBar from '../components/panel/SideBar'
 import Timeline from '../components/panel/Timeline'
 import TimelineTopControls from '../components/panel/TimelineTopControls'
-import { clientController } from '../services/ClientConnector'
+import { hostConnector } from '../services/ClientConnector'
 
 export default function Panel() {
     return (
@@ -14,7 +14,7 @@ export default function Panel() {
                 <div style="display: flex">
                     <Icon
                         data-tooltip-left="Refresh Application"
-                        onClick={() => clientController.sendCommand("refresh-host")}
+                        onClick={() => hostConnector.sendCommand("refresh-host")}
                         iconName={() => 'refresh'}
                         size={32}
                     />

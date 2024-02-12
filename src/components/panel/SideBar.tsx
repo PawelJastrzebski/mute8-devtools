@@ -1,8 +1,10 @@
-import { createMemo, createSignal, onCleanup } from "solid-js"
+import { createMemo, createSignal } from "solid-js"
 import "./SideBar.scss"
 import { Mute8Storage, storageController } from "../../services/StorageController"
 import Icon from "../Icon"
 import { newStore } from "mute8-solid"
+import Button from "../Button"
+import { overrideController } from "../../services/OverrideController"
 
 interface StorageListItem {
     label: string
@@ -28,7 +30,7 @@ export const storageList = newStore({
     }
 })
 
-
+// @ts-ignore
 function SwitchButton(props: { color: string }) {
     const [isActive, setActive] = createSignal(false)
 
@@ -48,11 +50,15 @@ function StorageListItem(props: { label: string, showOntimeline: boolean, onSele
     const store = storageController.getMute8ViewStore(props.label);
     const [events,] = store.solid.useOne("events")
     const [selected,] = store.solid.useOne("selected")
+    const [overrided,] = store.solid.useOne("overrided")
     return (
         <div classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
                 <div onclick={() => props.onSelect(props.label)} class="label"> {props.label}</div>
                 {/* <SwitchButton color="#7700aa" /> */}
+                <Button class="gray-button" onClick={() => overrideController.setOverride(props.label)} disabled={() => false} >
+                    <Icon iconName={() => overrided() ? "paly-circle" : "pause"} size={24} />
+                </Button>
             </div>
             <div class="stats">
                 <span>Events</span> {events()}

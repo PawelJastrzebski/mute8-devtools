@@ -5,13 +5,14 @@ import { topControls } from "../components/panel/TimelineTopControls";
 import { storageList } from "../components/panel/SideBar";
 import { eventPreview } from "../components/panel/EventPreview";
 import { timelineRender } from "./TimelineRender";
-import { clientController } from "./ClientConnector";
+import { overrideController } from "./OverrideController";
 
 const createListItemStore = () => {
     return newStore({
         value: {
             events: 0,
-            selected: false
+            selected: false,
+            overrided: false
         },
         actions: {
             incrementEventsCount(value = 1) {
@@ -19,6 +20,9 @@ const createListItemStore = () => {
             },
             setSelected(selected: boolean) {
                 this.selected = selected;
+            },
+            setOvveridMode(overrided: boolean) {
+                this.overrided = overrided;
             }
         }
     })
@@ -39,18 +43,6 @@ interface ChangeStateEvent {
     time: number
 }
 export type StoreEvent = InitStateEvent | ChangeStateEvent
-
-const setOverride = (store?: Mute8Storage | null, event?: StoreEvent | null) => {
-    if (!store || !event) {
-        clientController.setOverrides({})
-        return
-    }
-    const o: Record<string, object> = {}
-    o[store.label] = {
-        state: event.state
-    }
-    clientController.setOverrides(o)
-}
 
 export class Mute8Storage {
     label: string
@@ -189,7 +181,7 @@ class StorageController {
         monacoDisplayEvent(event)
         topControls.actions.updateStatus(this.selected)
         if (this.selected && this.selected.ovverrideMode && event) {
-            setOverride(this.selected, event)
+            overrideController.setOverride(this.selected.label, true, event)
         }
     }
     nextEvent() {
@@ -215,13 +207,7 @@ class StorageController {
     }
     toogleOverrideMode() {
         if (!this.selected) return
-        this.selected.ovverrideMode = !this.selected.ovverrideMode;
-        if (!this.selected.ovverrideMode) {
-            setOverride()
-        } else {
-            setOverride(this.selected, this.selected.getSelected())
-        }
-        topControls.actions.updateStatus(this.selected)
+        overrideController.setOverride(this.selected.label)
     }
 }
 

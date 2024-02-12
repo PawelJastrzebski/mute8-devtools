@@ -2,8 +2,11 @@ import { WindowDialog } from "cors-window"
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { storageController } from "./StorageController"
 import { timelineRender } from "./TimelineRender"
+import { overrideController } from "./OverrideController";
 
-class ClientController {
+export type StateOverrides = Record<string, Types.OverrideState>;
+
+class HostConnector {
     dialog: WindowDialog<Types.Payload[]> | null = null
     constructor() {
         setTimeout(() => {
@@ -25,11 +28,13 @@ class ClientController {
                 storageController.pushInitState(p.stateInit)
             } else if (p.stateChanged) {
                 storageController.pushChnageState(p.stateChanged)
+            } else if (p.stateOverrides) {
+                overrideController.setInit(p.stateOverrides)
             }
         }
     }
 
-    setOverrides(overrides: Record<string, Types.OverrideState> | {}) {
+    setOverrides(overrides: StateOverrides) {
         this.dialog?.post([{
             stateOverrides: overrides
         }])
@@ -42,4 +47,4 @@ class ClientController {
     }
 }
 
-export const clientController = new ClientController()
+export const hostConnector = new HostConnector()
