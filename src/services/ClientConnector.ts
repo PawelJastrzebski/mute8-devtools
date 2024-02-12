@@ -1,7 +1,6 @@
 import { WindowDialog } from "cors-window"
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { storageController } from "./StorageController"
-import { timelineRender } from "./TimelineRender"
 import { overrideController } from "./OverrideController";
 
 export type StateOverrides = Record<string, Types.OverrideState>;
@@ -17,13 +16,9 @@ class HostConnector {
     handleMessage(list: Types.Payload[]) {
         for (const p of list) {
             if (p.init) {
-                storageController.resetState()
-                timelineRender.clear()
-            } else if (p.storageDefinitions) {
-                storageController.addStorageDefs(p.storageDefinitions)
-                console.log("defs")
+                storageController.init(p.init)
             } else if (p.devtoolsOptions) {
-                console.log("options", p.devtoolsOptions)
+                // todo
             } else if (p.stateInit) {
                 storageController.pushStorageEvent(p.stateInit.storageLabel, {
                     type: "init-state",

@@ -22,7 +22,7 @@ class OverrideController {
 
     setOverride(label: string, enable?: boolean, stateHolder?: StateHolder): void {
         const store = storageController.getOrCreateStorage(label)
-        const enableValue = enable ?? !store.ovverrideMode;
+        const enableValue = enable ?? !store.overrided;
         const canBeEnabled = (store.total() > 0 || !!stateHolder);
         if (enableValue && canBeEnabled) {
             const eventValue = stateHolder ?? store.getLast()!
@@ -35,8 +35,8 @@ class OverrideController {
         hostConnector.setOverrides(this.overrides)
 
         // update view
-        store.ovverrideMode = enableValue;
-        store.store.actions.setOveridMode(enableValue)
+        store.overrided = enableValue;
+        store.store.actions.setOverride(enableValue)
         storageController.updateSelectedPreview()
     }
 

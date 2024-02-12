@@ -24,7 +24,7 @@ export const topControls = newStore({
 
             if (store) {
                 this.cursor = store.getCursor() + 1;
-                this.ovverrideMode = store.ovverrideMode ? "play" : "pause"
+                this.ovverrideMode = store.overrided ? "play" : "pause"
             } else {
                 this.cursor = 0;
                 this.ovverrideMode = "disabled"

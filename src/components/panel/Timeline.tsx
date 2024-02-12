@@ -1,9 +1,9 @@
 import { createSignal } from "solid-js"
 import "./Timeline.scss"
 
+// Pointer controll
 const [x, setX] = createSignal(100)
 const [active, setActive] = createSignal(false)
-
 window.addEventListener("mousemove", (event: MouseEvent) => {
     const isActive = active();
     const width = window.innerWidth;
@@ -12,14 +12,15 @@ window.addEventListener("mousemove", (event: MouseEvent) => {
     if (isActive && x > 0 && x < width) {
         setX(x)
     }
-    if (isActive && (x < -200 || x  > width + 200 || fromBottom > 300)) {
+    if (isActive && (x < -200 || x > width + 200 || fromBottom > 300)) {
         setActive(false)
     }
 })
-
 window.addEventListener('mouseup', () => setActive(false))
 
 function Timeline() {
+    const [hidden, setHidden] = createSignal(true)
+    setTimeout(() => setHidden(false), 1000);
 
     return (
         <div id="timeline">
@@ -27,10 +28,10 @@ function Timeline() {
                 onMouseDown={() => !active() && (setActive(true))}
                 onMouseUp={() => active() && setActive(false)}
                 style={`left: ${x()}px`}
-                class={`pointer ${(active() ? "active": "")}`}
+                class={`pointer ${(active() ? "active" : "")}`}
             >
             </div>
-            <canvas id="timeline-canvas"></canvas>
+            <canvas classList={{ "hidden": hidden() }} id="timeline-canvas"></canvas>
         </div>
     )
 }

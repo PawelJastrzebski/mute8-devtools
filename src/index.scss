@@ -146,17 +146,14 @@ input {
 // ScrollBar
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 10px;
-  padding: 2px;
+  width: 5px;
 }
 ::-webkit-scrollbar-button {
   width: 0px;
   height: 0px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-color-light);
-  border: 0px none #ffffff;
+  background: #dadadaf6;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:active {

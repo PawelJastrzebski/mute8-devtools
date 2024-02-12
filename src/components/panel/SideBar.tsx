@@ -6,13 +6,16 @@ import { newStore } from "mute8-solid"
 import Button from "../Button"
 import { overrideController } from "../../services/OverrideController"
 
+const setFilterPhraseCache = (phrase: string) => localStorage.setItem("-phrase-cache-", phrase);
+const getFilterPhraseCache = () => localStorage.getItem("-phrase-cache-") ?? "";
+
 interface StorageListItem {
     label: string
-    showOnTimeline: boolean
+    overrided: boolean,
 }
 export const storageList = newStore({
     value: {
-        filterPhrase: "",
+        filterPhrase: getFilterPhraseCache(),
         list: [] as StorageListItem[]
     },
     actions: {
@@ -20,11 +23,12 @@ export const storageList = newStore({
             this.list = Array.from(storagesRegistry.values()).map(storage => {
                 return {
                     label: storage.label,
-                    showOnTimeline: storage.showOnTimeline
+                    overrided: storage.overrided
                 }
             })
         },
         filter(phrase: string) {
+            setFilterPhraseCache(phrase)
             this.filterPhrase = phrase;
         }
     }
@@ -57,7 +61,7 @@ function StorageListItem(props: { label: string, showOntimeline: boolean, onSele
                 <div onclick={() => props.onSelect(props.label)} class="label"> {props.label}</div>
                 {/* <SwitchButton color="#7700aa" /> */}
                 <Button class="gray-button" onClick={() => overrideController.setOverride(props.label)} disabled={() => false} >
-                    <Icon iconName={() => overrided() ? "paly-circle" : "pause"} size={24} />
+                    <Icon iconName={() => overrided() ? "paly-circle" : "pause"} size={20} />
                 </Button>
             </div>
             <div class="stats">
@@ -69,6 +73,7 @@ function StorageListItem(props: { label: string, showOntimeline: boolean, onSele
 
 function SideBar() {
     const [list,] = storageList.solid.use()
+    const [filterPhrase,] = storageList.solid.useOne("filterPhrase")
     const components = createMemo(() => {
         const store = list()
         return store.list
@@ -87,6 +92,7 @@ function SideBar() {
             <div class="filter">
                 <Icon iconName={() => 'search'} size={24} />
                 <input
+                    value={filterPhrase()}
                     onkeyup={(e) => storageController.filterList((e.target as any).value)}
                     placeholder="Search Store"
                 ></input>

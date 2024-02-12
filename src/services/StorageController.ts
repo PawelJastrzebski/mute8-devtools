@@ -7,6 +7,12 @@ import { timelineRender } from "./TimelineRender";
 import { overrideController } from "./OverrideController";
 import { dashboardStore } from "../components/panel/Dashboard";
 
+const key = "-selected-store-";
+export const setSelectedMute8StoreCache = (phrase: string | null) => {
+    !!phrase ? localStorage.setItem(key, phrase) : localStorage.removeItem(key)
+}
+export const getSelectedMute8StoreCache = () => localStorage.getItem(key);
+
 const createListItemStore = () => {
     return newStore({
         value: {
@@ -21,7 +27,7 @@ const createListItemStore = () => {
             setSelected(selected: boolean) {
                 this.selected = selected;
             },
-            setOveridMode(overrided: boolean) {
+            setOverride(overrided: boolean) {
                 this.overrided = overrided;
             }
         }
@@ -46,15 +52,13 @@ export type StoreEvent = InitStateEvent | ChangeStateEvent
 
 export class Mute8Storage {
     label: string
-    showOnTimeline: boolean
     events: Array<StoreEvent> = []
     store: Mute8StoreInstance = createListItemStore()
     cursor: null | number = null;
-    ovverrideMode: boolean = false;
+    overrided: boolean = false;
 
     constructor(label: string) {
         this.label = label;
-        this.showOnTimeline = false;
     }
 
     addEvent(event: StoreEvent): StoreEvent {
@@ -106,7 +110,7 @@ export class Mute8Storage {
 }
 
 class StorageController {
-    storagesRegistry: Map<string, Mute8Storage> = new Map();
+    registry: Map<string, Mute8Storage> = new Map();
     selected: Mute8Storage | null = null;
 
     // Utils
@@ -115,33 +119,33 @@ class StorageController {
     }
 
     getOrCreateStorage(storageLabel: string): Mute8Storage {
-        if (this.selected?.label == storageLabel) {
-            return this.selected;
-        }
-
-        const inRegistry = this.storagesRegistry.get(storageLabel)
+        const inRegistry = this.registry.get(storageLabel)
         if (!!inRegistry) {
             return inRegistry
         }
         const storage = new Mute8Storage(storageLabel);
-        this.storagesRegistry.set(storageLabel, storage)
-        storageList.actions.updateAll(this.storagesRegistry)
+        this.registry.set(storageLabel, storage)
+        storageList.actions.updateAll(this.registry)
         return storage
     }
 
     // Hanlde Incoming Data
-    resetState() {
-        this.storagesRegistry = new Map()
-        storageList.actions.updateAll(this.storagesRegistry)
-        this.selectStore(null)
-        this.selectEvent(null)
-    }
-    addStorageDefs(defs: Types.StorageDefintion[]) {
-        for (let def of defs) {
+    init(init: Types.DevToolsInit) {
+        // reset
+        this.registry = new Map()
+        this.selected = null;
+
+        // init defs
+        for (let def of init.definitions) {
             this.getOrCreateStorage(def.label)
         }
-        storageList.actions.updateAll(this.storagesRegistry)
-        dashboardStore.actions.setStoreRegisterd(this.storagesRegistry.size)
+        dashboardStore.actions.reset(this.registry.size)
+
+        // init ovverrides
+        overrideController.setInit(init.overrides)
+        storageList.actions.updateAll(this.registry)
+
+        setTimeout(() => this.selectStore(getSelectedMute8StoreCache()), 50)
     }
     pushStorageEvent(lable: string, event: StoreEvent) {
         const storage = this.getOrCreateStorage(lable);
@@ -163,8 +167,9 @@ class StorageController {
             this.selected.store.actions.setSelected(false)
         }
         // select
-        this.selected = this.storagesRegistry.get(l) ?? null
+        this.selected = this.registry.get(l) ?? null
         if (this.selected) {
+            setSelectedMute8StoreCache(l)
             this.selected.store.actions.setSelected(true)
         }
 
@@ -192,7 +197,7 @@ class StorageController {
         this.selectEvent(this.selected.getLast())
     }
     private selectEvent(event: StoreEvent | null) {
-        if (this.selected && this.selected.ovverrideMode && event) {
+        if (this.selected && this.selected.overrided && event) {
             overrideController.setOverride(this.selected.label, true, event)
         }
         this.updateSelectedPreview()

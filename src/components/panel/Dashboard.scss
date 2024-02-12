@@ -2,6 +2,11 @@
     display: flex;
     align-items: flex-start;
     height: 80%;
+    transition: opacity 500ms;
+
+    &.hidden {
+        opacity: 0.001;
+    }
 
     .dashboard-content {
         display: flex;
