@@ -29,11 +29,11 @@ function MonacoEditorPreview() {
 
         const t = timestamp("HH:mm:ss ms", new Date(e.time))
         return (
-            <div class="event-info">
+            <>
                 <div data-tooltip="Selected/Total" class="stats">{cursor()}/{total()}</div>
                 <div data-tooltip="Event Type" class="type-info wrapper">{e.type}</div>
                 <div data-tooltip="Event Timestamp" class="timestamp wrapper">{t}ms</div>
-            </div>
+            </>
         )
     })
 
@@ -46,7 +46,9 @@ function MonacoEditorPreview() {
         <>
             <div class="top">
                 <TimelineTopControls />
-                {eventInfo()}
+                <div class="event-info">
+                    {eventInfo()}
+                </div>
                 <div class="right-icons">
                     <Icon size={20} iconName={() => "close"} onClick={onClose} />
                 </div>
