@@ -7,7 +7,9 @@
     "start": "npm run dev",
     "dev": "vite --port 4030",
     "build": "tsc && vite build",
-    "preview": "vite preview --port 4030"
+    "mv:docs": "rm -rf ./docs && mv -f dist/  docs/",
+    "deploy:preview": "vite preview --outDir docs --base /mute8-devtools/ --port 4030",
+    "deploy": "npm run build && npm run mv:docs"
   },
   "dependencies": {
     "cors-window": "^0.0.0-alpha.4",
