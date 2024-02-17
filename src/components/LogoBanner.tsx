@@ -1,13 +1,11 @@
 import "./LogoBanner.scss"
 
-function LogoBaner() {
-    const logo = <div><div class="img"></div></div>
-    return (
-      <div style="padding: 10px">
-        <div id='logo-baner'>{logo}</div>
-      </div>
-    )
-  }
-  
+function LogoBaner(props: { small?: boolean }) {
+  const logo = <div><div class="img"></div></div>
+  return (
+    <div classList={{ "small": props.small ?? false }} id='logo-baner'>{logo}</div>
+  )
+}
+
 
 export default LogoBaner;

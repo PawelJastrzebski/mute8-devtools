@@ -7,11 +7,20 @@
     "start": "npm run dev",
     "dev": "vite --port 4030",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "mv:docs": "rm -rf ./docs && mv -f dist/  docs/",
+    "deploy:preview": "vite preview --outDir docs --base /mute8-devtools/ --port 4030",
+    "deploy": "npm run build && npm run mv:docs"
   },
   "dependencies": {
-    "mute8-solid": "file:../x-js/packages/mute8-solid",
-    "solid-js": "^1.8.7"
+    "cors-window": "^0.0.0-alpha.4",
+    "i": "^0.3.7",
+    "monaco-editor": "^0.46.0",
+    "mute8-plugins": "^0.0.0-alpha.3",
+    "mute8-solid": "^0.0.0-alpha.2",
+    "npm": "^10.4.0",
+    "pixi.js": "^7.4.0",
+    "solid-js": "^1.8.7",
+    "time-stamp": "^2.2.0"
   },
   "devDependencies": {
     "sass": "^1.70.0",

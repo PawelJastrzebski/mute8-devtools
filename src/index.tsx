@@ -3,35 +3,29 @@ import { render } from 'solid-js/web'
 import { useView } from "./services/Router"
 import './index.scss'
 import { createMemo } from 'solid-js'
-import TopBar from './components/TopBar'
-import { clientController } from './services/ClientConnector'
-import Footer from './components/Footer'
-import LogoBanner from './components/LogoBanner'
+import { hostConnector } from './services/ClientConnector'
+import Panel from './pages/Panel'
+import Home from './pages/Home'
+import { monacoEditor } from './services/MonacoEditor'
+import { monacoEditorDiff } from './services/MonacoEditor'
+import { storageController } from './services/StorageController'
+import { keyboard } from './services/Keyboard'
+import { timelineRender } from './services/TimelineRender'
 
-// Eeager Init
-clientController
+export const githubUrl = "https://github.com/PawelJastrzebski/mute8"
+export const homePageUrl = "https://paweljastrzebski.github.io/mute8"
 
-function Panel() {
-    return (
-        <>
-            <TopBar />
-            <h1>Panel</h1>
-        </>
-    )
-}
-
-function Home() {
-    return (
-        <>
-            <TopBar />
-            <LogoBanner />
-            <div class="body">
-            <h1>Home</h1>
-
-            </div>
-            <Footer />
-        </>
-    )
+// vite hot reload
+if (import.meta.hot) {
+    import.meta.hot.on('vite:afterUpdate', () => setTimeout(() => {
+        monacoEditor.init()
+        monacoEditorDiff.init()
+        storageController.selectStore()
+        timelineRender.init()
+        keyboard.init()
+        hostConnector.init()
+    }, 0)
+    );
 }
 
 function Router() {

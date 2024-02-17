@@ -1,0 +1,39 @@
+import { createSignal } from "solid-js"
+import "./Timeline.scss"
+
+// Pointer controll
+const [x, setX] = createSignal(100)
+const [active, setActive] = createSignal(false)
+window.addEventListener("mousemove", (event: MouseEvent) => {
+    const isActive = active();
+    const width = window.innerWidth;
+    const fromBottom = window.innerHeight - event.clientY;
+    const x = event.pageX;
+    if (isActive && x > 0 && x < width) {
+        setX(x)
+    }
+    if (isActive && (x < -200 || x > width + 200 || fromBottom > 300)) {
+        setActive(false)
+    }
+})
+window.addEventListener('mouseup', () => setActive(false))
+
+function Timeline() {
+    const [hidden, setHidden] = createSignal(true)
+    setTimeout(() => setHidden(false), 1000);
+
+    return (
+        <div id="timeline">
+            <div
+                onMouseDown={() => !active() && (setActive(true))}
+                onMouseUp={() => active() && setActive(false)}
+                style={`left: ${x()}px`}
+                class={`pointer ${(active() ? "active" : "")}`}
+            >
+            </div>
+            <canvas classList={{ "hidden": hidden() }} id="timeline-canvas"></canvas>
+        </div>
+    )
+}
+
+export default Timeline

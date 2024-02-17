@@ -3,22 +3,35 @@
     width: 100%;
     padding: 5px;
 
-    > div {
+    >div {
         box-sizing: border-box;
         width: 100%;
         height: 200px;
-        background-color: rgb(38 38 38);
+        background-color: var(--gray-color);
         border-radius: var(--border-radious);
         margin: 0 auto;
         outline: 4px solid var(--main-color);
         transition: 300ms;
 
-        > .img {
+        >.img {
             width: 200px;
-            height: 200px;
+            height: inherit;
             margin: auto;
             background: var(--logo-dark) center no-repeat;
             background-size: contain;
+        }
+    }
+
+    &.small {
+        padding: 2px;
+
+        >div {
+            height: 120px;
+            outline-width: 2px;
+
+            .img {
+                width: 100px;
+            }
         }
     }
 }
