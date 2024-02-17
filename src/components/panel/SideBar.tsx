@@ -55,14 +55,14 @@ function StorageListItem(props: { label: string, showOntimeline: boolean, onSele
     const store = storageController.getMute8ViewStore(props.label);
     const [events,] = store.solid.useOne("events")
     const [selected,] = store.solid.useOne("selected")
-    const [overrided,] = store.solid.useOne("overrided")
+    const centerButton = store.solid.select(s => s.overrided ? "paly-circle" : "pause")
     return (
         <div classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
                 <div onclick={() => props.onSelect(props.label)} class="nav-label"> {props.label}</div>
                 {/* <SwitchButton color="#7700aa" /> */}
                 <Button class="gray-button" onClick={() => overrideController.setOverride(props.label)} disabled={() => false} >
-                    <Icon iconName={() => overrided() ? "paly-circle" : "pause"} size={20} />
+                    <Icon iconName={centerButton} size={20} />
                 </Button>
             </div>
             <div class="stats">

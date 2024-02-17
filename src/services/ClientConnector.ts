@@ -13,8 +13,6 @@ class HostConnector {
     }
 
     init() {
-        console.log(this.dialog)
-
         if (this.dialog) return;
 
         this.dialog = new WindowDialog("devtools");

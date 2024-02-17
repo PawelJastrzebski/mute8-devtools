@@ -34,15 +34,14 @@ export const topControls = newStore({
 })
 
 function TimelineTopControls() {
-    const [selectedLable,] = topControls.solid.useOne("selectedLable")
-    const [disableNext,] = topControls.solid.useOne("disableNext")
-    const [disablePrevious,] = topControls.solid.useOne("disablePrevious")
-    const [ovverrideMode,] = topControls.solid.useOne("ovverrideMode")
-    const centerIconName = () => ovverrideMode() === 'play' ? 'paly-circle' : "pause"
-    const hidden = () => !selectedLable();
+    const hidden = topControls.solid.select(v => !v.selectedLable)
+    const disableNext = topControls.solid.useOne("disableNext")[0]
+    const disablePrevious = topControls.solid.useOne("disablePrevious")[0]
+    const ovverrideMode = topControls.solid.select(v => v.ovverrideMode)
+    const centerIconName = () => ovverrideMode() === "play" ? "paly-circle" : "pause"
 
     return (
-        <div classList={{"hidden": hidden()}} id="timeline-top-controlls">
+        <div classList={{ "hidden": hidden() }} id="timeline-top-controlls">
             <Button onClick={() => storageController.previousEvent()} disabled={disablePrevious} >
                 <Icon iconName={() => 'keybord-tab'} flipX={true} size={iconSize} />
             </Button>
