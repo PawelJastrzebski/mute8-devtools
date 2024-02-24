@@ -7,15 +7,17 @@
     "start": "npm run dev",
     "dev": "vite --port 4030",
     "build": "tsc && vite build",
+    "preview": "vite build && vite preview --port 4030",
     "mv:docs": "rm -rf ./docs && mv -f dist/  docs/",
     "deploy:preview": "vite preview --outDir docs --base /mute8-devtools/ --port 4030",
     "deploy": "npm run build && npm run mv:docs"
   },
   "dependencies": {
+    "@alenaksu/json-viewer": "^2.0.1",
     "cors-window": "^0.0.0-alpha.4",
     "i": "^0.3.7",
     "monaco-editor": "^0.46.0",
-    "mute8-plugins": "^0.0.0-alpha.4",
+    "mute8-plugins": "file:../x-js/packages/mute8-plugins",
     "mute8-solid": "^0.0.0-alpha.3",
     "npm": "^10.4.0",
     "pixi.js": "^7.4.0",

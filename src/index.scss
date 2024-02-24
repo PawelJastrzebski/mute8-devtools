@@ -127,7 +127,7 @@ input {
 // tooltip
 [data-tooltip]:hover:after {
   opacity: 1;
-  transition: all 0.1s ease 0.5s;
+  transition: all 0.1s ease 1.5s;
   visibility: visible;
 }
 
@@ -144,7 +144,7 @@ input {
 
 [data-tooltip-left]:hover:after {
   opacity: 1;
-  transition: all 0.1s ease 0.5s;
+  transition: all 0.1s ease 1.5s;
   visibility: visible;
 }
 

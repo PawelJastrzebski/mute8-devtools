@@ -4,8 +4,8 @@ import { setSelectedMute8StoreCache, storageController, StoreEvent } from "../..
 import timestamp from "time-stamp"
 import TimelineTopControls, { topControls } from "./TimelineTopControls"
 import { newStore } from "mute8-solid"
-import Dashboard from "./Dashboard"
 import Icon from "../Icon"
+import { FullStatePreview } from "./FullStatePreview"
 
 export const eventPreview = newStore({
     value: {
@@ -25,8 +25,7 @@ function MonacoEditorPreview() {
 
     const eventInfo = createMemo(() => {
         const e = event()
-        if (!e) return null;
-
+        if (!e) return <></>;
         const t = timestamp("HH:mm:ss ms", new Date(e.time))
         return (
             <>
@@ -64,7 +63,7 @@ function EventPreview() {
     return (
         <div id="event-preview">
             <div class="content">
-                <Dashboard />
+                <FullStatePreview />
             </div>
             <div classList={{ "content": true, "hidden": showCodePreview() }}>
                 <MonacoEditorPreview />

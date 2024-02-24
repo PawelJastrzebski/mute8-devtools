@@ -13,8 +13,10 @@ class HostConnector {
     }
 
     init() {
-        if (this.dialog) return;
-
+        if (this.dialog && this.dialog.isOpen()) {
+            return
+        }
+        
         this.dialog = new WindowDialog("devtools");
         this.dialog.onMessage = (data) => this.handleMessage(data as object[])
         router.actions.setConnected(this.dialog.isOpen())
@@ -27,17 +29,21 @@ class HostConnector {
             } else if (p.devtoolsOptions) {
                 // todo
             } else if (p.stateInit) {
-                storageController.pushStorageEvent(p.stateInit.storageLabel, {
-                    type: "init-state",
-                    state: p.stateInit.state,
-                    time: p.stateInit.time
+                const i = p.stateInit;
+                storageController.pushStorageEvent(i.storageLabel, {
+                    type: "init",
+                    state: i.state,
+                    time: i.time
                 })
             } else if (p.stateChanged) {
-                storageController.pushStorageEvent(p.stateChanged.storageLabel, {
-                    type: "change-state",
-                    oldState: p.stateChanged.oldState,
-                    state: p.stateChanged.newState,
-                    time: p.stateChanged.time
+                const c = p.stateChanged;
+                storageController.pushStorageEvent(c.storageLabel, {
+                    type: "change",
+                    oldState: c.oldState,
+                    state: c.newState,
+                    actionName: c.actionName,
+                    args: c.args,
+                    time: c.time
                 })
             } else if (p.stateOverrides) {
                 overrideController.setInit(p.stateOverrides)

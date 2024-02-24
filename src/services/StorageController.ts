@@ -5,7 +5,7 @@ import { topControls } from "../components/panel/TimelineTopControls";
 import { storageList } from "../components/panel/SideBar";
 import { timelineRender } from "./TimelineRender";
 import { overrideController } from "./OverrideController";
-import { dashboardStore } from "../components/panel/Dashboard";
+import { storeFullPreview } from "../components/panel/FullStatePreview";
 
 const key = "-selected-store-";
 export const setSelectedMute8StoreCache = (phrase: string | null) => {
@@ -37,15 +37,17 @@ type Mute8StoreInstance = ReturnType<typeof createListItemStore>;
 
 // Event Types
 interface InitStateEvent {
-    type: "init-state"
+    type: "init"
     state: object
     time: number
 }
 
 interface ChangeStateEvent {
-    type: "change-state"
+    type: "change"
     oldState: object
     state: object,
+    actionName: string | undefined,
+    args: any[] | undefined,
     time: number
 }
 export type StoreEvent = InitStateEvent | ChangeStateEvent
@@ -139,7 +141,7 @@ class StorageController {
         for (let def of init.definitions) {
             this.getOrCreateStorage(def.label)
         }
-        dashboardStore.actions.reset(this.registry.size)
+        storeFullPreview.actions.reset(this.registry.size)
 
         // init ovverrides
         overrideController.setInit(init.overrides)
@@ -155,7 +157,7 @@ class StorageController {
             topControls.actions.updateStatus(this.selected)
             timelineRender.addEvent(newEvent)
         }
-        dashboardStore.actions.incrementEventsCount()
+        storeFullPreview.actions.updateStoreState(lable, event.state)
     }
 
     // Controls
@@ -212,6 +214,9 @@ class StorageController {
     toggleOverride() {
         if (!this.selected) return
         overrideController.setOverride(this.selected.label)
+
+        // TOOD Changes preview
+        const changes: ChangeStateEvent[] = this.selected.events.filter(e => e.type == 'change') as ChangeStateEvent[]
     }
 }
 

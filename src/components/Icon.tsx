@@ -1,7 +1,7 @@
 import { createMemo } from "solid-js"
 import { githubUrl } from ".."
 
-type IconsNames = "refresh" | "git" | "start" | "keybord-tab" | "pause" | "paly-circle" | "search" | "close" | "database" | "monitoring"
+type IconsNames = "refresh" | "git" | "start" | "keybord-tab" | "pause" | "paly-circle" | "search" | "close" | "database" | "monitoring" | "copy" | "expand" | "collapse"
 
 function getSvgIcon(name: IconsNames, size: number = 24) {
     if (name == 'refresh') {
@@ -56,6 +56,23 @@ function getSvgIcon(name: IconsNames, size: number = 24) {
     if (name == 'monitoring') {
         return (
             <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size}  viewBox="0 -960 960 960"><path fill="#fff" d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z"/></svg>
+        )
+    }   
+
+    if (name == 'copy') {
+        return (
+            <svg xmlns="http://www.w3.org/2000/svg"  height={size} width={size} viewBox="0 -960 960 960" ><path fill="#fff" d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg>
+        )
+    }  
+
+    if (name == 'expand') {
+        return (
+            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960" ><path fill="#fff" d="M480-120 300-300l58-58 122 122 122-122 58 58-180 180ZM358-598l-58-58 180-180 180 180-58 58-122-122-122 122Z"/></svg>
+        )
+    }
+    if (name == 'collapse') {
+        return (
+            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} fill="#fff" viewBox="0 -960 960 960" ><path d="m356-160-56-56 180-180 180 180-56 56-124-124-124 124Zm124-404L300-744l56-56 124 124 124-124 56 56-180 180Z"/></svg>
         )
     }
     return <></>

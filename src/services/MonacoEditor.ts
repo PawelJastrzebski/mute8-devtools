@@ -60,6 +60,7 @@ const commonOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     value: "",
     language: 'json',
     theme: "mute8-theme",
+    lineNumbers: "off",
     scrollBeyondLastLine: true,
     readOnly: true,
     automaticLayout: true,
@@ -144,18 +145,17 @@ export const monacoEditor = new MonacoEditor("code", "monaco-editor-standard")
 export const monacoEditorDiff = new MonacoEditorDiff("code", "monaco-editor-diff")
 
 export const eventPreviewDisplay = (event: StoreEvent | null) => {
+    eventPreview.actions.setEvent(event)
     if (event == null) {
         monacoEditor.setHidden(true)
         monacoEditorDiff.setHidden(true)
-    } else if (event.type === 'init-state') {
+    } else if (event.type === 'init') {
         monacoEditor.setCode(toJsonPritty(event.state))
         monacoEditorDiff.setHidden(true)
         monacoEditor.setHidden(false)
-    } else if (event.type === 'change-state') {
+    } else if (event.type === 'change') {
         monacoEditorDiff.setCode(toJsonPritty(event.oldState), toJsonPritty(event.state))
         monacoEditor.setHidden(true)
         monacoEditorDiff.setHidden(false)
     }
-
-    eventPreview.actions.setEvent(event)
 }
