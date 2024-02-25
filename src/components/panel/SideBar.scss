@@ -71,11 +71,11 @@
         .storage-instance {
             min-height: 40px;
             background-color: var(--gray-color);
-            border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 8px;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 5px;
             font-size: 1.1rem;
-            border: 2px solid transparent;
+            border: 1px solid transparent;
             transition: 200ms;
 
             &.selected {
@@ -89,7 +89,6 @@
 
             .stats {
                 font-size: .85rem;
-                padding: 8px 0 0 0;
                 color: var(--white-darkest);
 
                 span {

@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@alenaksu/json-viewer": "^2.0.1",
+    "@minht11/solid-virtual-container": "^0.2.1",
+    "@tanstack/solid-virtual": "^3.1.2",
     "cors-window": "^0.0.0-alpha.4",
     "i": "^0.3.7",
     "monaco-editor": "^0.46.0",

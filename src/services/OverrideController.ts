@@ -1,8 +1,9 @@
 import { hostConnector, StateOverrides } from "./ClientConnector";
+import { eventsListController } from "./EventsListController";
 import { storageController } from "./StorageController";
 
 // StoreEvent or Override
-type StateHolder = { state: object }
+type StateHolder = { id: number, state: object }
 
 class OverrideController {
     private overrides: StateOverrides = {}
@@ -20,13 +21,17 @@ class OverrideController {
         return !!this.overrides[label]
     }
 
+    isOverridedById(eventId: number): boolean {
+        return !!Object.values(this.overrides).find(v => v.id == eventId)
+    }
+
     setOverride(label: string, enable?: boolean, stateHolder?: StateHolder): void {
         const store = storageController.getOrCreateStorage(label)
         const enableValue = enable ?? !store.overrided;
         const canBeEnabled = (store.total() > 0 || !!stateHolder);
+        const eventValue = stateHolder ?? store.getLast()!
         if (enableValue && canBeEnabled) {
-            const eventValue = stateHolder ?? store.getLast()!
-            this.overrides[label] = { state: eventValue.state }
+            this.overrides[label] = { id: eventValue.id, state: eventValue.state }
         } else {
             delete this.overrides[label]
         }
@@ -37,7 +42,9 @@ class OverrideController {
         // update view
         store.overrided = enableValue;
         store.store.actions.setOverride(enableValue)
+        store.setCursorById(eventValue.id)
         storageController.updateSelectedPreview()
+        eventsListController.virtualizer.rerender()
     }
 
 }

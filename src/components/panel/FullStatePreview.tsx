@@ -49,8 +49,8 @@ export function FullStatePreview() {
     const onCopy = () => { moveToClickBoard() }
 
     const codeNode = createMemo(() => {
-        if(isConnected()) {
-            return  <JsonView id={id} data={storeJson} />
+        if (isConnected()) {
+            return <JsonView id={id} data={storeJson} />
         }
 
         return <div class="devtools-disconnect-info">Disconnected from application</div>
@@ -58,7 +58,7 @@ export function FullStatePreview() {
 
     return (
         <div id="full-state-preview">
-            <div classList={{"top": true, "connected": isConnected()}}>
+            <div classList={{ "top": true, "connected": isConnected() }}>
                 <div class="left-icons">
                     <div class="type-info wrapper">Full State</div>
                     <Icon data-tooltip="Collapse All" size={20} iconName={() => "collapse"} onClick={onCollapse} />

@@ -1,11 +1,12 @@
 import "./EventPreview.scss"
 import { createMemo } from "solid-js"
-import { setSelectedMute8StoreCache, storageController, StoreEvent } from "../../services/StorageController"
+import { setSelectedMute8StoreCache, storageController } from "../../services/StorageController"
 import timestamp from "time-stamp"
 import TimelineTopControls, { topControls } from "./TimelineTopControls"
 import { newStore } from "mute8-solid"
 import Icon from "../Icon"
 import { FullStatePreview } from "./FullStatePreview"
+import { StoreEvent } from "../../services/StoregeEvent"
 
 export const eventPreview = newStore({
     value: {

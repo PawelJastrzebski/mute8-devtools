@@ -31,6 +31,8 @@ class HostConnector {
             } else if (p.stateInit) {
                 const i = p.stateInit;
                 storageController.pushStorageEvent(i.storageLabel, {
+                    id: i.id,
+                    label: i.storageLabel,
                     type: "init",
                     state: i.state,
                     time: i.time
@@ -38,9 +40,11 @@ class HostConnector {
             } else if (p.stateChanged) {
                 const c = p.stateChanged;
                 storageController.pushStorageEvent(c.storageLabel, {
+                    id: c.id,
+                    label: c.storageLabel,
                     type: "change",
                     oldState: c.oldState,
-                    state: c.newState,
+                    state: c.state,
                     actionName: c.actionName,
                     args: c.args,
                     time: c.time

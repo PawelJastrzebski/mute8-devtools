@@ -6,6 +6,8 @@ import { storageList } from "../components/panel/SideBar";
 import { timelineRender } from "./TimelineRender";
 import { overrideController } from "./OverrideController";
 import { storeFullPreview } from "../components/panel/FullStatePreview";
+import { StoreEvent } from "./StoregeEvent";
+import { eventsListController } from "./EventsListController";
 
 const key = "-selected-store-";
 export const setSelectedMute8StoreCache = (phrase: string | null) => {
@@ -34,23 +36,6 @@ const createListItemStore = () => {
     })
 }
 type Mute8StoreInstance = ReturnType<typeof createListItemStore>;
-
-// Event Types
-interface InitStateEvent {
-    type: "init"
-    state: object
-    time: number
-}
-
-interface ChangeStateEvent {
-    type: "change"
-    oldState: object
-    state: object,
-    actionName: string | undefined,
-    args: any[] | undefined,
-    time: number
-}
-export type StoreEvent = InitStateEvent | ChangeStateEvent
 
 export class Mute8Storage {
     label: string
@@ -81,6 +66,12 @@ export class Mute8Storage {
     getLast(): StoreEvent | null {
         this.cursor = Math.max(this.events.length - 1, 0)
         return this.getSelected()
+    }
+
+    setCursorById(eventId: number) {
+        const item = this.events.find(e => e.id === eventId);
+        if(!item) return;
+        this.cursor = (this.events.indexOf(item) ?? this.cursor)
     }
 
     getCursor(): number {
@@ -136,6 +127,7 @@ class StorageController {
         // reset
         this.registry = new Map()
         this.selected = null;
+        eventsListController.reset()
 
         // init defs
         for (let def of init.definitions) {
@@ -158,6 +150,7 @@ class StorageController {
             timelineRender.addEvent(newEvent)
         }
         storeFullPreview.actions.updateStoreState(lable, event.state)
+        eventsListController.addEvent(event)
     }
 
     // Controls
@@ -216,7 +209,7 @@ class StorageController {
         overrideController.setOverride(this.selected.label)
 
         // TOOD Changes preview
-        const changes: ChangeStateEvent[] = this.selected.events.filter(e => e.type == 'change') as ChangeStateEvent[]
+        // const changes: ChangeStateEvent[] = this.selected.events.filter(e => e.type == 'change') as ChangeStateEvent[]
     }
 }
 
