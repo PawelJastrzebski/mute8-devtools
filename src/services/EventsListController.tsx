@@ -10,6 +10,7 @@ class EventsListController {
     events: StoreEvent[] = []
     readonly virtualizer = newVirtualizer<number>({
         height: 42,
+        updateMs: 300,
         renderItem: this.renderEvent.bind(this)
     });
 
@@ -25,13 +26,10 @@ class EventsListController {
 
     renderEvent(index: number): JSXElement {
         const event = this.events[index]
-        const t = timestamp("HH:mm:ss ms", new Date(event.time))
+        const time = timestamp("HH:mm:ss ms", new Date(event.time))
         const overrided = overrideController.isOverridedById(event.id)
-
-        let label = <>{event.label}.{event.type}</>
-        if (event.type == "change") {
-            label = <>{event.label}.{event.actionName}</>
-        }
+        const actionDescription = event.type == "change" ? event.actionName ?? "mut(..)" : event.type;
+        const label = <><span class="e-type">{event.label}</span>.{actionDescription}</>
 
         const onClick = () => {
             if (overrided) {
@@ -46,10 +44,7 @@ class EventsListController {
 
         return <div onclick={onClick} classList={{ "event-list-item": true, "overrided": overrided }}>
             <div class="e-label">{label}</div>
-            <div class="e-right">
-                {/* <div class="e-type">{event.type}</div> */}
-                <div class="e-time">{t}</div>
-            </div>
+            <div class="e-time">{time}</div>
         </div>
     }
 }

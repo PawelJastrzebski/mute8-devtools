@@ -9,7 +9,8 @@
   --white-dark: #dadada;
   --white-darkest: #b3b3b3;
   --gray-color-light: #4a4c4e;
-  --gray-color: #212224;
+  --gray-color:  #232425;;
+  // --gray-color: #242526;
   --gray-color-dark: #1a1b1b;
   --gray-color-dark-05: #1a1b1b80;
 
@@ -159,10 +160,10 @@ input {
   position: relative;
 }
 
-
 // ScrollBar
 ::-webkit-scrollbar {
   width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-button {
   width: 0px;

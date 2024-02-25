@@ -1,3 +1,4 @@
+import { storeFullPreview } from "../components/panel/FullStatePreview";
 import { hostConnector, StateOverrides } from "./ClientConnector";
 import { eventsListController } from "./EventsListController";
 import { storageController } from "./StorageController";
@@ -45,6 +46,7 @@ class OverrideController {
         store.setCursorById(eventValue.id)
         storageController.updateSelectedPreview()
         eventsListController.virtualizer.rerender()
+        storeFullPreview.actions.updateStoreState(label, eventValue.state, false)
     }
 
 }

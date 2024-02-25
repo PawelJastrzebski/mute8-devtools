@@ -7,6 +7,7 @@ import { newStore } from "mute8-solid"
 import Icon from "../Icon"
 import { FullStatePreview } from "./FullStatePreview"
 import { StoreEvent } from "../../services/StoregeEvent"
+import { CloseEventListIcon, EventList } from "./EventList"
 
 export const eventPreview = newStore({
     value: {
@@ -51,6 +52,7 @@ function MonacoEditorPreview() {
                 </div>
                 <div class="right-icons">
                     <Icon size={20} iconName={() => "close"} onClick={onClose} />
+                    <CloseEventListIcon />
                 </div>
             </div>
             <div id="code" class="code"></div>
@@ -62,14 +64,17 @@ function EventPreview() {
     const [event,] = eventPreview.solid.useOne("event")
     const showCodePreview = () => !event();
     return (
-        <div id="event-preview">
-            <div class="content">
-                <FullStatePreview />
+        <>
+            <div id="event-preview">
+                <div class="content">
+                    <FullStatePreview />
+                </div>
+                <div classList={{ "content": true, "hidden": showCodePreview() }}>
+                    <MonacoEditorPreview />
+                </div>
             </div>
-            <div classList={{ "content": true, "hidden": showCodePreview() }}>
-                <MonacoEditorPreview />
-            </div>
-        </div>
+            <EventList />
+        </>
     )
 }
 

@@ -40,7 +40,10 @@ class Virtualizer<T> {
     }
 
     rerender() {
-        this.manualRerender[1](p => p + 1)
+        setTimeout(() => {
+            this.manualRerender[1](p => p + 1)
+            this.resize()
+        }, 2)
     }
 
     private updateList() {

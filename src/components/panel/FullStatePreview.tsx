@@ -5,6 +5,7 @@ import Icon from "../Icon";
 import { toJsonPritty } from "../../services/MonacoEditor";
 import { router } from "../../services/Router";
 import { createMemo } from "solid-js";
+import { CloseEventListIcon } from "./EventList";
 
 export const storeFullPreview = newStore({
     value: {
@@ -68,6 +69,7 @@ export function FullStatePreview() {
                 <div class="right-stats">
                     <div data-tooltip-left="Stores" class="type-info wrapper">Stores: {storesCount()}</div>
                     <div data-tooltip-left="Total events" class="type-info wrapper">Events: {eventsCount()}</div>
+                    <CloseEventListIcon />
                 </div>
             </div>
             <div class="code json-view">

@@ -22,7 +22,6 @@ export default function Panel() {
             <div class="body">
                 <SideBar />
                 <EventPreview />
-                <EventList />
             </div>
             <Timeline />
         </>
