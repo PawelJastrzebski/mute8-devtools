@@ -138,10 +138,8 @@ class StorageController {
         // init ovverrides
         overrideController.setInit(init.overrides)
         storageList.actions.updateAll(this.registry)
-        setTimeout(() => {
-            this.selectStore(getSelectedMute8StoreCache())
-            expandFullStatePreview()
-        }, 50)
+        setTimeout(() => this.selectStore(getSelectedMute8StoreCache()), 50)
+        setTimeout(() => expandFullStatePreview(), 200)
     }
     pushStorageEvent(lable: string, event: StoreEvent) {
         const storage = this.getOrCreateStorage(lable);

@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { StoreEvent } from './StorageController';
+import { StoreEvent } from './StoregeEvent';
 
 const calcPx = (milis: number, scalePx: number) => {
     const diffInSeconds = (milis) / 1000;
@@ -27,7 +27,6 @@ class TimelineEvent extends PIXI.Graphics {
         const fromRight = calcPx(timeDiff, this.myScale);
         this.clear()
         if (fromRight <= w) {
-            this.clear()
             this.beginFill("#ddd");
             this.drawRect(w - fromRight, 0, 1, this.app.screen.height);
         }
@@ -42,22 +41,18 @@ class TimelineEvent extends PIXI.Graphics {
 const now = () => new Date().getTime()
 class TimelineRender {
     // {scale} px per second
-    scale = 200;
+    scale = 100;
     canvas: HTMLCanvasElement | null = null;
     app: PIXI.Application<PIXI.ICanvas> | null = null;
 
     events: TimelineEvent[] = []
     constructor(private canvasId: string) {
         document.addEventListener("DOMContentLoaded", this.init.bind(this));
-
     }
 
     handleMouseWheel(e: WheelEvent) {
-        if (e.deltaY > 0) {
-            this.scale = between(50, 1000, this.scale - 10)
-        } else {
-            this.scale = between(50, 1000, this.scale + 10)
-        }
+        const x = e.deltaY > 0 ? -1 : 1;
+        this.scale = between(1, 1000, this.scale + (this.scale / 20) * x)
     }
 
     init() {
@@ -75,8 +70,8 @@ class TimelineRender {
         this.app.ticker.maxFPS = 60
         this.app.ticker.minFPS = 10
         this.app.ticker.add(() => {
-            for (const e of this.events) {
-                e.update(this.scale)
+            for (let index = this.events.length - 1; index >= 0; index--) {
+                this.events[index].update(this.scale)
             }
         })
 

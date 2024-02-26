@@ -13,19 +13,25 @@ class EventsListController {
     readonly virtualizer = newVirtualizer({
         height: 42,
         updateMs: 300,
-        bottomPadding: 0.9,
+        bottomPadding: 0.8,
         renderItem: this.renderEvent.bind(this)
     });
 
     reset() {
         this.events = []
         this.virtualizer.setItems([])
-        this.virtualizer.rerender()
     }
 
     addEvent(event: StoreEvent) {
         const index = (this.events.push(event) - 1)
         this.virtualizer.unshift(index)
+    }
+
+    scrollBottom() {
+        this.virtualizer.scrollBottom()
+    }
+    scrollTop() {
+        this.virtualizer.scrollTop()
     }
 
     renderEvent(index: number): JSXElement {
@@ -48,7 +54,7 @@ class EventsListController {
             </div>)
         }
 
-        const onClick = () => {
+        const onToogleOverride = () => {
             if (overrided) {
                 overrideController.setOverride(event.label, false)
             } else {
@@ -56,29 +62,29 @@ class EventsListController {
             }
         }
 
-        const onSelect = (e: MouseEvent) => {
+        const onExpand = (e: MouseEvent) => {
             e.preventDefault()
             e.stopPropagation()
             this.selected?.id == event.id ? this.selected = null : this.selected = event;
             this.virtualizer.rerender()
         }
 
-        return (<>
-            <div classList={{ "event-list-item": true, "overrided": overrided, "selected": isSelected  }}>
+        return (
+            <div classList={{ "event-list-item": true, "overrided": overrided, "selected": isSelected }}>
                 <div class="top">
-                    <div class="e-label" onclick={onClick}>
+                    <div class="e-label" onclick={onToogleOverride}>
                         {label}
                     </div>
                     <div class="e-time">
                         <div class="time-value">
                             {time}
-                            <Icon onClick={onSelect} iconName={() => 'expand-more'} />
+                            <Icon onClick={onExpand} iconName={() => 'expand-more'} />
                         </div>
                     </div>
                 </div>
                 {expnadedNode}
             </div>
-        </>)
+        )
     }
 }
 

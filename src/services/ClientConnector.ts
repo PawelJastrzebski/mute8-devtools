@@ -16,7 +16,7 @@ class HostConnector {
         if (this.dialog && this.dialog.isOpen()) {
             return
         }
-        
+
         this.dialog = new WindowDialog("devtools");
         this.dialog.onMessage = (data) => this.handleMessage(data as object[])
         router.actions.setConnected(this.dialog.isOpen())
@@ -69,3 +69,5 @@ class HostConnector {
 }
 
 export const hostConnector = new HostConnector()
+
+export const refreshHostApp = () => hostConnector.sendCommand("refresh-host");

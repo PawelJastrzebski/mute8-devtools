@@ -24,6 +24,12 @@
     >.header {
         justify-content: space-between;
 
+        .icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         >span {
             opacity: .7;
         }
@@ -46,7 +52,7 @@
                 color: var(--white-dark);
                 background-color: var(--gray-color);
                 border-radius: 5px;
-                opacity: .9;
+                opacity: 1;
                 margin-bottom: 2px;
 
                 &.overrided {
@@ -78,7 +84,12 @@
 
 
                     .e-label {
+                        opacity: .8;
+                        transition: 200ms ease-in-out;
                         cursor: pointer;
+                        &:hover {
+                            opacity: 1;
+                        }
 
                         .e-type {
                             width: 70px;
@@ -90,6 +101,7 @@
                     .e-time {
                         width: 115px;
                         position: relative;
+                        opacity: .8;
 
                         .time-value {
                             display: flex;

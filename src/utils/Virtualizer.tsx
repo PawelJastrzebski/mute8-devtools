@@ -48,6 +48,7 @@ class Virtualizer {
     }
 
     rerender() {
+        this.forceRender()
         setTimeout(this.forceRender.bind(this), 2)
         setTimeout(this.forceRender.bind(this), 10)
     }
@@ -80,6 +81,7 @@ class Virtualizer {
         const index = this.items.indexOf(item)
         const start = this.getItemsOffset() - 1;
         const end = start + (this.getItemsToRender() - 2);
+        console.log("i", index, item, this.items)
 
         const fromTop = index - start;
         const fromBottom = end - index;
@@ -95,12 +97,23 @@ class Virtualizer {
     }
 
     scrollTo(item: number | undefined) {
-        if (!item) return;
+        if (item == undefined) return;
         const offset = this.visibleOffset(item)
+        console.log(offset)
         if (this.parentRef && offset != 0) {
             this.parentRef.scrollTo({ top: this.parentRef.scrollTop - (offset * this.height) })
         }
         this.rerender()
+    }
+
+    scrollTop() {
+        if (!this.parentRef) return
+        this.parentRef.scrollTo({ top: 0 })
+    }
+
+    scrollBottom() {
+        if (!this.parentRef) return
+        this.scrollTo(this.items[this.items.length - 1])
     }
 
     push(item: number) {
@@ -114,6 +127,7 @@ class Virtualizer {
     setItems(items: number[]) {
         this.items = items;
         this.listHeight[1](this.items.length * this.height)
+        this.rerender()
     }
 
     private resize(parentRef: any = this.parentRef) {
