@@ -5,6 +5,7 @@ interface ListDefinition<T> {
     renderItem: (item: T) => JSXElement
     init?: Array<T>,
     updateMs?: number
+    bottomPadding?: number,
 }
 
 class Virtualizer<T> {
@@ -12,6 +13,7 @@ class Virtualizer<T> {
     height: number
     updateMs: number
     stickiStrenght: number = 3;
+    bottomPadding: number = 0;
     renderItem: (item: T) => JSXElement
     parentStyle = {
         height: `100%`,
@@ -31,6 +33,7 @@ class Virtualizer<T> {
         this.items = def.init ?? []
         this.height = def.height
         this.updateMs = def.updateMs ?? 150;
+        this.bottomPadding = def.bottomPadding ?? 0;
         this.renderItem = def.renderItem
         this.listHeight = createSignal(this.items.length * this.height)
         this.parentHeight = createSignal(0)
@@ -90,36 +93,38 @@ class Virtualizer<T> {
         this.scroolOffset[1](this.parentRef.scrollTop)
     }
 
+    private getItemsToRender(): number {
+        return Math.ceil(this.parentHeight[0]() / this.height)
+    }
+    private getItemsOffset(): number {
+        return Math.round(this.scroolOffset[0]() / this.height)
+    }
+
     public getRows(): Accessor<JSXElement[]> {
         const manualRerender = this.manualRerender[0]
         const listHeight = this.listHeight[0]
         const scroolOffset = this.scroolOffset[0]
-        const parentHeight = this.parentHeight[0]
-        const itemsToRender = createMemo(() => Math.round(parentHeight() / this.height))
-        const itemsOffset = createMemo(() => Math.ceil(scroolOffset() / this.height))
         return createMemo(() => {
             let scrollOffset = scroolOffset();
-            const offset = itemsOffset()
-            const items = itemsToRender()
-            listHeight()
+            let offset = this.getItemsOffset();
+            const items = this.getItemsToRender()
             manualRerender()
+            listHeight()
 
             // end of list
-            let start = 0;
-            if (offset > 0 && items + offset > this.items.length) {
-                scrollOffset -= (this.height - (parentHeight() - ((items - 1) * this.height)))
-                start = -1;
+            const lastItem = items + offset;
+            const totalItems = this.items.length;
+            if (offset > 0 && lastItem >= totalItems) {
+                const pxGap = this.parentHeight[0]() % this.height;
+                scrollOffset -= pxGap > 0 ? (this.height - pxGap) : pxGap
+                offset -= Math.min(lastItem - totalItems, 1) + 1
             }
 
-            const style = { height: this.height + "px", transform: "translateY(" + scrollOffset + "px)" };
+            const style = { "min-height": this.height + "px", transform: "translateY(" + scrollOffset + "px)" };
             const result = [] as JSXElement[]
-            for (let i = start; i < items + 1; i++) {
+            for (let i = 0; i < items + 1; i++) {
                 const item: T = this.items[i + offset]
-                item && result.push(
-                    <div style={style}>
-                        {this.renderItem(item)}
-                    </div>
-                )
+                item && result.push(<div style={style}>{this.renderItem(item)}</div>)
             }
             return result
         })
@@ -139,7 +144,10 @@ class Virtualizer<T> {
         onCleanup(() => {
             window.removeEventListener('resize', onResizeFn)
         })
-        createEffect(() => innerRef.style.height = listHeight() + "px")
+        createEffect(() => {
+            const bottomPadding = (this.getItemsToRender() * this.bottomPadding) * this.height;
+            innerRef.style.height = listHeight() + bottomPadding + "px"
+        })
         return () => (
             <div class="scroll-parent" ref={parentRef} style={this.parentStyle} >
                 <div class="scroll-inner" ref={innerRef}>

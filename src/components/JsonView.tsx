@@ -17,13 +17,28 @@ ul { margin: 0 }
 .key.collapsable:before { color: #b3b3b3 }
 `
 
-export function JsonView(props: { id: string, data: () => object }) {
+const styleNoPreview = document.createElement('style')
+styleNoPreview.innerHTML = `
+ ul { margin: 0 }
+.key.collapsable:before { color: #b3b3b3 }
+.preview { 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+ }
+`
+
+export function JsonView(props: { id: string, data: () => object, preview?: boolean, expandAll?: boolean, expand?: string }) {
     let ref: any;
     onMount(() => {
-        ref.shadowRoot.appendChild(style)
+        ref.shadowRoot.appendChild(props.preview ? style : styleNoPreview);
+        if (!!props.expandAll) expandJsonViewer(props.id)
+        if (!!props.expand) getJsonViewer(props.id)?.expand(props.expand)
     })
 
-    return <json-viewer ref={ref} id={props.id} data={props.data()}></json-viewer>
+    return <div class="json-view-div">
+        <json-viewer ref={ref} id={props.id} data={props.data()}></json-viewer>
+    </div>
 }
 
 interface JsonViewer {

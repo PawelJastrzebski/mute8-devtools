@@ -4,13 +4,16 @@ import { StoreEvent } from "./StoregeEvent";
 import timestamp from "time-stamp";
 import { overrideController } from "./OverrideController";
 import { storageController } from "./StorageController";
-
+import Icon from "../components/Icon";
+import { JsonView } from "../components/JsonView";
 
 class EventsListController {
     events: StoreEvent[] = []
+    selected: StoreEvent | null = null
     readonly virtualizer = newVirtualizer<number>({
         height: 42,
         updateMs: 300,
+        bottomPadding: 0.9,
         renderItem: this.renderEvent.bind(this)
     });
 
@@ -31,6 +34,19 @@ class EventsListController {
         const actionDescription = event.type == "change" ? event.actionName ?? "mut(..)" : event.type;
         const label = <><span class="e-type">{event.label}</span>.{actionDescription}</>
 
+
+        let expnadedNode = <></>
+        if (this.selected?.id == event.id) {
+            const data = event.type == "change" ? event.args ?? [] : event.state;
+            expnadedNode = (<div class="expanded">
+                <JsonView
+                    id={event.id + "-args-preview"}
+                    preview={false}
+                    expand={"0"}
+                    data={() => data} />
+            </div>)
+        }
+
         const onClick = () => {
             if (overrided) {
                 overrideController.setOverride(event.label, false)
@@ -42,10 +58,27 @@ class EventsListController {
             }
         }
 
-        return <div onclick={onClick} classList={{ "event-list-item": true, "overrided": overrided }}>
-            <div class="e-label">{label}</div>
-            <div class="e-time">{time}</div>
-        </div>
+        const onSelect = (e: MouseEvent) => {
+            e.preventDefault()
+            e.stopPropagation()
+            this.selected?.id == event.id ? this.selected = null : this.selected = event;
+            this.virtualizer.rerender()
+        }
+
+        return (<>
+            <div classList={{ "event-list-item": true, "overrided": overrided }}>
+                <div class="top">
+                    <div onclick={onClick} classList={{ "e-label": true, "overrided": overrided }}>{label}</div>
+                    <div class="e-time">
+                        <div class="time-value">
+                            {time}
+                            <Icon onClick={onSelect} iconName={() => 'expand-more'} />
+                        </div>
+                    </div>
+                </div>
+                {expnadedNode}
+            </div>
+        </>)
     }
 }
 
