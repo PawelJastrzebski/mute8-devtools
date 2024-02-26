@@ -29,7 +29,7 @@ class OverrideController {
         const store = storageController.getOrCreateStorage(label)
         const enableValue = enable ?? !store.overrided;
         const canBeEnabled = (store.total() > 0 || !!stateHolder);
-        const eventValue = stateHolder ?? store.getSelected()!
+        const eventValue = stateHolder ?? store.getSelected() ?? store.getLast()!;
         if (enableValue && canBeEnabled) {
             this.overrides[label] = { id: eventValue.id, state: eventValue.state }
         } else {

@@ -5,7 +5,7 @@ import { topControls } from "../components/panel/TimelineTopControls";
 import { storageList } from "../components/panel/SideBar";
 import { timelineRender } from "./TimelineRender";
 import { overrideController } from "./OverrideController";
-import { storeFullPreview } from "../components/panel/FullStatePreview";
+import { expandFullStatePreview, storeFullPreview } from "../components/panel/FullStatePreview";
 import { StoreEvent } from "./StoregeEvent";
 import { eventsListController } from "./EventsListController";
 
@@ -70,7 +70,7 @@ export class Mute8Storage {
 
     setCursorById(eventId: number) {
         const item = this.events.find(e => e.id === eventId);
-        if(!item) return;
+        if (!item) return;
         this.cursor = (this.events.indexOf(item) ?? this.cursor)
     }
 
@@ -138,8 +138,10 @@ class StorageController {
         // init ovverrides
         overrideController.setInit(init.overrides)
         storageList.actions.updateAll(this.registry)
-
-        setTimeout(() => this.selectStore(getSelectedMute8StoreCache()), 50)
+        setTimeout(() => {
+            this.selectStore(getSelectedMute8StoreCache())
+            expandFullStatePreview()
+        }, 50)
     }
     pushStorageEvent(lable: string, event: StoreEvent) {
         const storage = this.getOrCreateStorage(lable);
@@ -211,7 +213,7 @@ class StorageController {
         overrideController.setOverride(this.selected.label)
     }
     isSelectedById(label: string, eventId: number): boolean {
-        if(this.selected?.label !== label) return false;
+        if (this.selected?.label !== label) return false;
         const event = this.selected.getSelected()
         return event?.id === eventId
     }

@@ -39,19 +39,20 @@ const moveToClickBoard = () => {
     navigator.clipboard.writeText(json);
 }
 
+const fullStatePreview = "full-state-JsonView"
+export const expandFullStatePreview = () => { expandJsonViewer(fullStatePreview) }
+export const collapseFullStatePreview = () => { collapseJsonViewer(fullStatePreview) }
+const onCopy = () => { moveToClickBoard() }
+
 export function FullStatePreview() {
     const [isConnected,] = router.solid.useOne("isConnected")
     const storeJson = storeFullPreview.solid.useOne("storeJson")[0]
     const eventsCount = storeFullPreview.solid.useOne("events")[0]
     const storesCount = storeFullPreview.solid.useOne("stores")[0]
-    const id = "full-state-JsonView"
-    const onCollapse = () => { collapseJsonViewer(id) }
-    const onExpand = () => { expandJsonViewer(id) }
-    const onCopy = () => { moveToClickBoard() }
 
     const codeNode = createMemo(() => {
         if (isConnected()) {
-            return <JsonView id={id} data={storeJson} />
+            return <JsonView id={fullStatePreview} data={storeJson} />
         }
 
         return <div class="devtools-disconnect-info">Disconnected from application</div>
@@ -62,8 +63,8 @@ export function FullStatePreview() {
             <div classList={{ "top": true, "top-bar-style": true, "connected": isConnected() }}>
                 <div class="left-icons">
                     <div class="type-info wrapper">Full State</div>
-                    <Icon data-tooltip="Collapse All" size={20} iconName={() => "collapse"} onClick={onCollapse} />
-                    <Icon data-tooltip="Expand All" size={20} iconName={() => "expand"} onClick={onExpand} />
+                    <Icon data-tooltip="Collapse All" size={20} iconName={() => "collapse"} onClick={collapseFullStatePreview} />
+                    <Icon data-tooltip="Expand All" size={20} iconName={() => "expand"} onClick={expandFullStatePreview} />
                     <Icon data-tooltip="Copy" size={20} iconName={() => "copy"} onClick={onCopy} />
                 </div>
                 <div class="right-stats">
