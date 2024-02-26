@@ -30,7 +30,7 @@
 }
 
 #side-bar {
-    width: 300px;
+    width: 280px;
     height: 100%;
     border-right: 1px solid rgba(128, 128, 128, 0.089);
     display: none;
@@ -48,6 +48,8 @@
 
         >input {
             padding-right: 36px;
+            height: 28px;
+            border-radius: 5px;
         }
 
         .icon {
@@ -63,7 +65,7 @@
     .items {
         flex: 1;
         min-width: 0;
-        padding: 0 8px;
+        padding: 5px 8px 0 8px;
         overflow: auto;
         overflow-x: hidden;
         margin-bottom: 1px;
@@ -71,10 +73,10 @@
         .storage-instance {
             min-height: 40px;
             background-color: var(--gray-color);
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 8px;
             margin-bottom: 5px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             border: 1px solid transparent;
             transition: 200ms;
 
@@ -85,6 +87,11 @@
             .top {
                 display: flex;
                 justify-content: space-between;
+
+                .mute8-button {
+                    height: 30px;
+                    width: 30px;
+                }
             }
 
             .stats {

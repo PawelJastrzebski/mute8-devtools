@@ -45,7 +45,7 @@ function MonacoEditorPreview() {
 
     return (
         <>
-            <div class="top">
+            <div class="top top-bar-style">
                 <TimelineTopControls />
                 <div class="event-info">
                     {eventInfo()}

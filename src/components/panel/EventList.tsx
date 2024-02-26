@@ -29,7 +29,7 @@ export function EventList() {
     const list = eventsListController.virtualizer.getList()()
     return (
         <div classList={{ "event-list": true, "disabled": diabled() }}>
-            <div class="header">
+            <div class="header top-bar-style">
                 <span>Event List</span>
                 <Icon size={20} iconName={() => "close"} onClick={toggle} />
             </div>

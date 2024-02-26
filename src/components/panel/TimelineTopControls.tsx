@@ -3,7 +3,7 @@ import { newStore } from "mute8-solid";
 import { Mute8Storage, storageController } from "../../services/StorageController";
 import Icon from "../Icon"
 import Button from "../Button";
-const iconSize = 22;
+const iconSize = 20;
 
 type OverrideState = "disabled" | "pause" | "play";
 export const topControls = newStore({

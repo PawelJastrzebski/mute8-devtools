@@ -59,7 +59,7 @@ export function FullStatePreview() {
 
     return (
         <div id="full-state-preview">
-            <div classList={{ "top": true, "connected": isConnected() }}>
+            <div classList={{ "top": true, "top-bar-style": true, "connected": isConnected() }}>
                 <div class="left-icons">
                     <div class="type-info wrapper">Full State</div>
                     <Icon data-tooltip="Collapse All" size={20} iconName={() => "collapse"} onClick={onCollapse} />
