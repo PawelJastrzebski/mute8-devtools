@@ -28,7 +28,7 @@ const toggle = () => eventListStore.actions.toggle();
 export function CloseEventListIcon() {
     const enabled = eventListStore.solid.select(v => v.visible)
     return <div style={{ "display": enabled() ? "none" : "flex" }}>
-        <Icon data-tooltip-left="Event List" size={20} iconName={() => "list"} onClick={toggle} />
+        <Icon data-tooltip-left="Events Stack" size={20} iconName={() => "list"} onClick={toggle} />
     </div>
 }
 
@@ -39,7 +39,7 @@ export function EventList() {
     return (
         <div classList={{ "event-list": true, "disabled": diabled() }}>
             <div class="header top-bar-style">
-                <span>Event List</span>
+                <span>Events Stack</span>
                 <Icon size={20} iconName={() => "close"} onClick={toggle} />
             </div>
             <div class="body">

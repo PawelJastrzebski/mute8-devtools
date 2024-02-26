@@ -42,11 +42,14 @@ class Virtualizer {
         setInterval(this.updateList.bind(this), this.updateMs)
     }
 
+    private forceRender() {
+        this.manualRerender[1](p => p + 1)
+        this.resize()
+    }
+
     rerender() {
-        setTimeout(() => {
-            this.manualRerender[1](p => p + 1)
-            this.resize()
-        }, 2)
+        setTimeout(this.forceRender.bind(this), 2)
+        setTimeout(this.forceRender.bind(this), 10)
     }
 
     private updateList() {
@@ -81,7 +84,6 @@ class Virtualizer {
         const fromTop = index - start;
         const fromBottom = end - index;
 
-        console.log("fbottom", fromTop, "fromtop", fromBottom)
         if (fromTop < 0) return -fromTop
         if (fromBottom < 0) return fromBottom
         return 0
@@ -95,9 +97,7 @@ class Virtualizer {
     scrollTo(item: number | undefined) {
         if (!item) return;
         const offset = this.visibleOffset(item)
-        console.log("offset", offset)
         if (this.parentRef && offset != 0) {
-            console.log(">>", (offset * this.height))
             this.parentRef.scrollTo({ top: this.parentRef.scrollTop - (offset * this.height) })
         }
         this.rerender()
@@ -147,14 +147,14 @@ class Virtualizer {
             if (offset > 0 && lastItem >= totalItems) {
                 const pxGap = this.parentHeight[0]() % this.height;
                 scrollOffset -= pxGap > 0 ? (this.height - pxGap) : pxGap
-                offset -= Math.min(lastItem - totalItems, 1) + 1
+                offset -= Math.min(lastItem - totalItems, 1);
             }
 
             const style = { "min-height": this.height + "px", transform: "translateY(" + scrollOffset + "px)" };
             const result = [] as JSXElement[]
             for (let i = 0; i < items + 1; i++) {
                 const item: number = this.items[i + offset]
-                item && result.push(<div style={style}>{this.renderItem(item)}</div>)
+                item != undefined && result.push(<div style={style}>{this.renderItem(item)}</div>)
             }
             return result
         })

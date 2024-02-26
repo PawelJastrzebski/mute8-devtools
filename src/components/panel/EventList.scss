@@ -37,6 +37,10 @@
         .scroll-parent {
             width: 100%;
 
+            &::-webkit-scrollbar-thumb {
+                background-color: #92898981;
+            }
+
             .event-list-item {
                 margin-right: 2px;
                 color: var(--white-dark);
@@ -86,6 +90,7 @@
                     .e-time {
                         width: 115px;
                         position: relative;
+
                         .time-value {
                             display: flex;
                             justify-content: space-around;

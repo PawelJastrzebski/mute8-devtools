@@ -92,7 +92,7 @@ function SideBar() {
     return (
         <div classList={{"visible": isConnected()}} id="side-bar">
             <div class="filter top-bar-style">
-                <Icon iconName={() => 'search'} size={22} />
+                <Icon iconName={() => 'search'} size={20} />
                 <input
                     value={filterPhrase()}
                     onkeyup={(e) => storageController.filterList((e.target as any).value)}
