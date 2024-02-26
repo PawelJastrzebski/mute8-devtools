@@ -15,10 +15,10 @@ class Keyboard {
     }
 
     handleEvent(event: KeyboardEvent) {
-        if (event.code == "ArrowRight") {
+        if (event.code == "ArrowRight" || event.code == "ArrowUp") {
             storageController.rewindToEvent(this.getRewindValue(event, +1))
         }
-        if (event.code == "ArrowLeft") {
+        if (event.code == "ArrowLeft" || event.code == "ArrowDown") {
             storageController.rewindToEvent(this.getRewindValue(event, -1))
         }
         if (event.code == "Space") {

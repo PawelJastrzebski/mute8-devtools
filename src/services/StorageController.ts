@@ -196,6 +196,7 @@ class StorageController {
             overrideController.setOverride(this.selected.label, true, event)
         }
         this.updateSelectedPreview()
+        eventsListController.virtualizer.scrollTo(event?.id)
     }
     filterList(phrase: string): void {
         storageList.actions.filter(phrase)
@@ -203,13 +204,16 @@ class StorageController {
     updateSelectedPreview() {
         eventPreviewDisplay(this.selected?.getSelected() ?? null)
         topControls.actions.updateStatus(this.selected)
+        eventsListController.virtualizer.rerender()
     }
     toggleOverride() {
         if (!this.selected) return
         overrideController.setOverride(this.selected.label)
-
-        // TOOD Changes preview
-        // const changes: ChangeStateEvent[] = this.selected.events.filter(e => e.type == 'change') as ChangeStateEvent[]
+    }
+    isSelectedById(label: string, eventId: number): boolean {
+        if(this.selected?.label !== label) return false;
+        const event = this.selected.getSelected()
+        return event?.id === eventId
     }
 }
 

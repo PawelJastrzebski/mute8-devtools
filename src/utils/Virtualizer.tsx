@@ -1,20 +1,20 @@
 import { Accessor, JSXElement, Signal, createEffect, createMemo, createSignal, onCleanup, onMount } from "solid-js"
 
-interface ListDefinition<T> {
+interface ListDefinition {
     height: number
-    renderItem: (item: T) => JSXElement
-    init?: Array<T>,
+    renderItem: (index: number) => JSXElement
+    init?: Array<number>,
     updateMs?: number
     bottomPadding?: number,
 }
 
-class Virtualizer<T> {
-    items: Array<T>
+class Virtualizer {
+    items: Array<number>
     height: number
     updateMs: number
     stickiStrenght: number = 3;
     bottomPadding: number = 0;
-    renderItem: (item: T) => JSXElement
+    renderItem: (item: number) => JSXElement
     parentStyle = {
         height: `100%`,
         overflow: 'auto',
@@ -27,9 +27,9 @@ class Virtualizer<T> {
     manualRerender: Signal<number>
 
     // push , unshift
-    addBuffer: [Array<T>, Array<T>] = [[], []]
+    addBuffer: [Array<number>, Array<number>] = [[], []]
 
-    constructor(def: ListDefinition<T>) {
+    constructor(def: ListDefinition) {
         this.items = def.init ?? []
         this.height = def.height
         this.updateMs = def.updateMs ?? 150;
@@ -73,15 +73,45 @@ class Virtualizer<T> {
         }
     }
 
-    push(item: T) {
+    visibleOffset(item: number): number {
+        const index = this.items.indexOf(item)
+        const start = this.getItemsOffset() - 1;
+        const end = start + (this.getItemsToRender() - 2);
+
+        const fromTop = index - start;
+        const fromBottom = end - index;
+
+        console.log("fbottom", fromTop, "fromtop", fromBottom)
+        if (fromTop < 0) return -fromTop
+        if (fromBottom < 0) return fromBottom
+        return 0
+    }
+
+    isVisible(item: number) {
+        const offset = this.visibleOffset(item)
+        return offset == 0
+    }
+
+    scrollTo(item: number | undefined) {
+        if (!item) return;
+        const offset = this.visibleOffset(item)
+        console.log("offset", offset)
+        if (this.parentRef && offset != 0) {
+            console.log(">>", (offset * this.height))
+            this.parentRef.scrollTo({ top: this.parentRef.scrollTop - (offset * this.height) })
+        }
+        this.rerender()
+    }
+
+    push(item: number) {
         this.addBuffer[0].push(item)
     }
 
-    unshift(item: T) {
+    unshift(item: number) {
         this.addBuffer[1].unshift(item)
     }
 
-    setItems(items: T[]) {
+    setItems(items: number[]) {
         this.items = items;
         this.listHeight[1](this.items.length * this.height)
     }
@@ -123,7 +153,7 @@ class Virtualizer<T> {
             const style = { "min-height": this.height + "px", transform: "translateY(" + scrollOffset + "px)" };
             const result = [] as JSXElement[]
             for (let i = 0; i < items + 1; i++) {
-                const item: T = this.items[i + offset]
+                const item: number = this.items[i + offset]
                 item && result.push(<div style={style}>{this.renderItem(item)}</div>)
             }
             return result
@@ -158,6 +188,6 @@ class Virtualizer<T> {
     }
 }
 
-export const newVirtualizer = <T,>(def: ListDefinition<T>): Virtualizer<T> => {
+export const newVirtualizer = (def: ListDefinition): Virtualizer => {
     return new Virtualizer(def)
 }

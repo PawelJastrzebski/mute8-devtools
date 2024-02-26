@@ -2,6 +2,14 @@ import "./EventList.scss"
 import { eventsListController } from "../../services/EventsListController";
 import { newStore } from "mute8-solid";
 import Icon from "../Icon";
+import { storageController } from "../../services/StorageController";
+
+const goToSelected = () => {
+    if (eventListStore.visible && storageController.selected) {
+        const event = storageController.selected.getSelected()
+        if (event) eventsListController.virtualizer.scrollTo(event.id)
+    }
+}
 
 const eventListStore = newStore({
     value: {
@@ -11,6 +19,7 @@ const eventListStore = newStore({
         toggle() {
             this.visible = !this.visible
             eventsListController.virtualizer.rerender()
+            setTimeout(goToSelected, 15)
         }
     }
 })

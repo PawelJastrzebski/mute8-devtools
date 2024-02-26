@@ -10,7 +10,7 @@ import { JsonView } from "../components/JsonView";
 class EventsListController {
     events: StoreEvent[] = []
     selected: StoreEvent | null = null
-    readonly virtualizer = newVirtualizer<number>({
+    readonly virtualizer = newVirtualizer({
         height: 42,
         updateMs: 300,
         bottomPadding: 0.9,
@@ -20,6 +20,7 @@ class EventsListController {
     reset() {
         this.events = []
         this.virtualizer.setItems([])
+        this.virtualizer.rerender()
     }
 
     addEvent(event: StoreEvent) {
@@ -31,9 +32,9 @@ class EventsListController {
         const event = this.events[index]
         const time = timestamp("HH:mm:ss ms", new Date(event.time))
         const overrided = overrideController.isOverridedById(event.id)
+        const isSelected = storageController.isSelectedById(event.label, event.id)
         const actionDescription = event.type == "change" ? event.actionName ?? "mut(..)" : event.type;
         const label = <><span class="e-type">{event.label}</span>.{actionDescription}</>
-
 
         let expnadedNode = <></>
         if (this.selected?.id == event.id) {
@@ -52,9 +53,6 @@ class EventsListController {
                 overrideController.setOverride(event.label, false)
             } else {
                 overrideController.setOverride(event.label, true, event)
-                if (storageController.selected && storageController.selected.label != event.label) {
-                    storageController.selectStore(event.label)
-                }
             }
         }
 
@@ -66,9 +64,11 @@ class EventsListController {
         }
 
         return (<>
-            <div classList={{ "event-list-item": true, "overrided": overrided }}>
+            <div classList={{ "event-list-item": true, "overrided": overrided, "selected": isSelected  }}>
                 <div class="top">
-                    <div onclick={onClick} classList={{ "e-label": true, "overrided": overrided }}>{label}</div>
+                    <div class="e-label" onclick={onClick}>
+                        {label}
+                    </div>
                     <div class="e-time">
                         <div class="time-value">
                             {time}

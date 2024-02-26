@@ -1,6 +1,5 @@
 import { storeFullPreview } from "../components/panel/FullStatePreview";
 import { hostConnector, StateOverrides } from "./ClientConnector";
-import { eventsListController } from "./EventsListController";
 import { storageController } from "./StorageController";
 
 // StoreEvent or Override
@@ -30,7 +29,7 @@ class OverrideController {
         const store = storageController.getOrCreateStorage(label)
         const enableValue = enable ?? !store.overrided;
         const canBeEnabled = (store.total() > 0 || !!stateHolder);
-        const eventValue = stateHolder ?? store.getLast()!
+        const eventValue = stateHolder ?? store.getSelected()!
         if (enableValue && canBeEnabled) {
             this.overrides[label] = { id: eventValue.id, state: eventValue.state }
         } else {
@@ -45,8 +44,7 @@ class OverrideController {
         store.store.actions.setOverride(enableValue)
         store.setCursorById(eventValue.id)
         storageController.updateSelectedPreview()
-        eventsListController.virtualizer.rerender()
-        storeFullPreview.actions.updateStoreState(label, eventValue.state, false)
+        storeFullPreview.actions.updateStoreState(label, eventValue.state, false);
     }
 
 }

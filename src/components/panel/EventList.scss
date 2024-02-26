@@ -47,6 +47,18 @@
 
                 &.overrided {
                     .top {
+                        border-left-color: var(--main-color-dark)
+                    }
+                }
+
+                &.selected {
+                    .top {
+                        border-color: var(--white-dark)
+                    }
+                }
+
+                &.selected.overrided {
+                    .top {
                         border-color: var(--main-color-dark)
                     }
                 }
