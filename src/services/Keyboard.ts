@@ -1,4 +1,5 @@
 import { toggleEventList } from "../components/panel/EventList";
+import { focusStoreListFilter, selectStoreByListIndex, storeListFilterisFocused } from "../components/panel/SideBar";
 import { refreshHostApp } from "./ClientConnector";
 import { storageController } from "./StorageController";
 
@@ -9,6 +10,9 @@ const getRewindValue = (event: KeyboardEvent, value: number) => {
 
 const handleEvent = (event: KeyboardEvent) => {
     const c = event.code;
+    const isLongPress = event.repeat;
+
+    // Event preview & controlls
     if (c == "ArrowRight" || c == "ArrowUp" || c == "KeyD" || c == "KeyW") {
         storageController.rewindToEvent(getRewindValue(event, +1))
     }
@@ -25,7 +29,27 @@ const handleEvent = (event: KeyboardEvent) => {
         refreshHostApp()
     }
     if (c == "Escape") {
-        storageController.selectStore(null)
+        if (storeListFilterisFocused()) {
+            (document.activeElement as HTMLElement)?.blur?.()
+        } else {
+            storageController.selectStore(null)
+        }
+    }
+
+    // Sidebar
+    if (c == "Backquote") {
+        if (focusStoreListFilter()) {
+            event.preventDefault()
+        }
+    }
+    if (c.startsWith("Digit")) {
+        const index = Number(c.replace("Digit", ""))
+        selectStoreByListIndex(index - 1)
+    }
+
+    // Exit app
+    if (c == "Escape" && isLongPress) {
+        window.close()
     }
 }
 

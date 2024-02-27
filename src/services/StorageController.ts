@@ -198,9 +198,6 @@ class StorageController {
         this.updateSelectedPreview()
         eventsListController.virtualizer.scrollTo(event?.id)
     }
-    filterList(phrase: string): void {
-        storageList.actions.filter(phrase)
-    }
     updateSelectedPreview() {
         eventPreviewDisplay(this.selected?.getSelected() ?? null)
         topControls.actions.updateStatus(this.selected)

@@ -14,6 +14,11 @@ interface StorageListItem {
     label: string
     overrided: boolean,
 }
+
+// filter
+let storageListFull = [] as StorageListItem[];
+const filter = (phrase: string) => storageListFull.filter((storage: any) => storage.label.toLocaleLowerCase().startsWith(phrase))
+
 export const storageList = newStore({
     value: {
         filterPhrase: getFilterPhraseCache(),
@@ -21,19 +26,35 @@ export const storageList = newStore({
     },
     actions: {
         updateAll(storagesRegistry: Map<string, Mute8Storage>) {
-            this.list = Array.from(storagesRegistry.values()).map(storage => {
+            storageListFull = Array.from(storagesRegistry.values()).map(storage => {
                 return {
                     label: storage.label,
                     overrided: storage.overrided
                 }
             })
+            this.list = filter(this.filterPhrase)
         },
         filter(phrase: string) {
             setFilterPhraseCache(phrase)
-            this.filterPhrase = phrase;
+            this.filterPhrase = phrase
+            this.list = filter(phrase)
         }
     }
 })
+
+const filterId = "sidebar-storage-filter"
+export const storeListFilterisFocused = () => document.activeElement?.id === filterId
+export const focusStoreListFilter = () => {
+    if (storeListFilterisFocused()) return false;
+    const node = document.getElementById(filterId)
+    node?.focus()
+    return true
+}
+
+export const selectStoreByListIndex = (index: number) => {
+    const store = storageList.list[index]
+    if (!!store) storageController.selectStore(store.label)
+}
 
 // @ts-ignore
 function SwitchButton(props: { color: string }) {
@@ -51,13 +72,18 @@ function SwitchButton(props: { color: string }) {
     )
 }
 
-function StorageListItem(props: { label: string, showOntimeline: boolean, onSelect: (label: string) => void }) {
+function StorageListItem(props: {
+    label: string,
+    showOntimeline: boolean,
+    onSelect: (label: string) => void
+    tabindex?: number
+}) {
     const store = storageController.getMute8ViewStore(props.label);
     const [events,] = store.solid.useOne("events")
     const [selected,] = store.solid.useOne("selected")
     const centerButton = store.solid.select(s => s.overrided ? "paly-circle" : "pause")
     return (
-        <div classList={{ "storage-instance": true, "selected": selected() }}>
+        <div tabindex={props.tabindex} classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
                 <div onclick={() => props.onSelect(props.label)} class="nav-label"> {props.label}</div>
                 {/* <SwitchButton color="#7700aa" /> */}
@@ -77,25 +103,26 @@ function SideBar() {
     const [list,] = storageList.solid.use()
     const [filterPhrase,] = storageList.solid.useOne("filterPhrase")
     const components = createMemo(() => {
-        const store = list()
-        return store.list
-            .filter((storage: any) => storage.label.toLocaleLowerCase().startsWith(store.filterPhrase))
-            .map((storage: any) => {
-                return (
-                    <StorageListItem
-                        onSelect={(l) => storageController.selectStore(l)}
-                        label={storage.label}
-                        showOntimeline={storage.showOnTimeline}
-                    />)
-            })
+        return list().list.map((storage: any, index) => {
+            return (
+                <StorageListItem
+                    tabindex={index + 1}
+                    onSelect={(l) => storageController.selectStore(l)}
+                    label={storage.label}
+                    showOntimeline={storage.showOnTimeline}
+                />
+            )
+        })
     })
     return (
-        <div classList={{"visible": isConnected()}} id="side-bar">
+        <div classList={{ "visible": isConnected() }} id="side-bar">
             <div class="filter top-bar-style">
                 <Icon iconName={() => 'search'} size={20} />
                 <input
+                    id={filterId}
+                    tabindex={0}
                     value={filterPhrase()}
-                    onkeyup={(e) => storageController.filterList((e.target as any).value)}
+                    onkeyup={(e) => storageList.actions.filter((e.target as any).value)}
                     placeholder="Filter"
                 ></input>
             </div>
