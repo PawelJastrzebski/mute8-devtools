@@ -1,5 +1,6 @@
 import { toggleEventList } from "../components/panel/EventList";
 import { focusStoreListFilter, toggleSelectedStoreByListIndex, storeListFilterisFocused } from "../components/panel/SideBar";
+import { toggleTimelineUI } from "../components/panel/Timeline";
 import { refreshHostApp } from "./ClientConnector";
 import { eventsListController } from "./EventsListController";
 import { storageController } from "./StorageController";
@@ -49,7 +50,7 @@ const handleEvent = (event: KeyboardEvent) => {
     }
     if (c == "KeyR") {
         refreshHostApp()
-    }
+    }    
     if (c == "Escape") {
         if (storeListFilterisFocused()) {
             (document.activeElement as HTMLElement)?.blur?.()
@@ -67,6 +68,11 @@ const handleEvent = (event: KeyboardEvent) => {
     if (c.startsWith("Digit")) {
         const index = Number(c.replace("Digit", ""))
         toggleSelectedStoreByListIndex(index - 1)
+    }
+
+    // Timelin
+    if (c == "KeyT") {
+        toggleTimelineUI()
     }
 
     // Exit app

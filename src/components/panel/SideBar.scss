@@ -51,6 +51,7 @@
             padding-right: 36px;
             height: 30px;
             border-radius: 5px;
+            background-color: var(--bg-color-light);
         }
 
         .icon {
@@ -71,7 +72,7 @@
 
         .storage-instance {
             min-height: 40px;
-            background-color: var(--gray-color);
+            background-color: var(--bg-color-light);
             border-radius: 6px;
             padding: 8px;
             margin-bottom: 5px;

@@ -54,7 +54,7 @@ function TimelineTopControls() {
             </Button>
             <Button data-tooltip="Next Event (D)" onClick={next} disabled={disableNext} >
                 <Icon iconName={() => 'keybord-tab'} size={iconSize} />
-            </Button>2
+            </Button>
         </div>
     )
 }

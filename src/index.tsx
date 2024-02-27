@@ -15,17 +15,17 @@ import { timelineRender } from './services/TimelineRender'
 export const githubUrl = "https://github.com/PawelJastrzebski/mute8"
 export const homePageUrl = "https://paweljastrzebski.github.io/mute8"
 
+
 // vite hot reload
 if (import.meta.hot) {
     import.meta.hot.on('vite:afterUpdate', () => {
-        timelineRender.init()
+        timelineRender.mount()
         keyboard.init()
         hostConnector.init()
         monacoEditor.init()
         monacoEditorDiff.init()
         storageController.selectStore(null)
-    }
-    );
+    });
 }
 
 function Router() {

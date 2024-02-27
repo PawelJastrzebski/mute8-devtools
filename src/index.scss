@@ -4,6 +4,7 @@
   --main-color-dark: #d3003f;
   --main-color-darkest: #b30036;
 
+  --bg-color-light: #232325;
   --bg-color: #1B1B1D;
   --bg-color-dark: #1E1E1E;
 
@@ -19,6 +20,13 @@
   --logo-dark: url("https://paweljastrzebski.github.io/mute8/img/logo-dark.svg");
   --logo-light: url("https://paweljastrzebski.github.io/mute8/img/logo-light.svg");
   --main-gradient: linear-gradient(0deg, #db0042 0%, #FF004C 100%);
+
+  --code-color: #9cdcfe;
+  --string-color: #ce9178;
+  --number-color: #b5cea8;
+  --boolean-color: #4ba7ef;
+  --null-color: #df9cf3;
+  --property-color: #9cdcfe;
 }
 
 * {

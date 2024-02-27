@@ -78,7 +78,6 @@ function StorageListItem(props: {
     label: string,
     showOntimeline: boolean,
     onSelect: (label: string) => void
-    tabindex?: number
 }) {
     const store = storageController.getMute8ViewStore(props.label);
     const [events,] = store.solid.useOne("events")
@@ -87,10 +86,9 @@ function StorageListItem(props: {
     const centerButtonTooltip = store.solid.select(s => !s.overrided ? "Override" : "Resume")
     const tollgeOverrideMode = () => overrideController.setOverride(props.label);
     return (
-        <div tabindex={props.tabindex} classList={{ "storage-instance": true, "selected": selected() }}>
+        <div classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
                 <div onclick={() => props.onSelect(props.label)} class="nav-label"> {props.label}</div>
-                {/* <SwitchButton color="#7700aa" /> */}
                 <Button data-tooltip-left-flat={centerButtonTooltip()} class="gray-button" onClick={tollgeOverrideMode} disabled={() => false} >
                     <Icon iconName={centerButton} size={20} />
                 </Button>
@@ -107,10 +105,9 @@ function SideBar() {
     const [list,] = storageList.solid.use()
     const [filterPhrase,] = storageList.solid.useOne("filterPhrase")
     const components = createMemo(() => {
-        return list().list.map((storage: any, index) => {
+        return list().list.map((storage: any) => {
             return (
                 <StorageListItem
-                    tabindex={index + 1}
                     onSelect={(l) => storageController.selectStore(l)}
                     label={storage.label}
                     showOntimeline={storage.showOnTimeline}
