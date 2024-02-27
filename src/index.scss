@@ -20,6 +20,7 @@
   --logo-dark: url("https://paweljastrzebski.github.io/mute8/img/logo-dark.svg");
   --logo-light: url("https://paweljastrzebski.github.io/mute8/img/logo-light.svg");
   --main-gradient: linear-gradient(0deg, #db0042 0%, #FF004C 100%);
+  --transition-ui: 200ms ease-out;
 
   --code-color: #9cdcfe;
   --string-color: #ce9178;
@@ -52,6 +53,8 @@ body {
   justify-content: stretch;
   align-items: stretch;
   flex-direction: column;
+  min-width: 550px;
+  min-height: 400px;
 
   .body {
     height: 0px;

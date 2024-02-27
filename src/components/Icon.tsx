@@ -1,7 +1,7 @@
 import { createMemo } from "solid-js"
 import { githubUrl } from ".."
 
-type IconsNames = "refresh" | "git" | "start" | "keybord-tab" | "pause" | "paly-circle" | "search" | "close" | "database" | "monitoring" | "copy" | "expand" | "collapse" | "list" | "expand-more" | "up" | "down"
+type IconsNames = "refresh" | "git" | "start" | "keybord-tab" | "pause" | "paly-circle" | "search" | "close" | "database" | "monitoring" | "copy" | "expand" | "collapse" | "list" | "expand-more" | "up" | "down" | "last-page"
 
 function getSvgIcon(name: IconsNames, size: number = 24, fill: string = "#FFFFFF") {
     if (name == 'refresh') {
@@ -93,6 +93,11 @@ function getSvgIcon(name: IconsNames, size: number = 24, fill: string = "#FFFFFF
     if (name == 'down') {
         return (
             <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960"><path fill={fill} d="M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z" /></svg>
+        )
+    }
+    if (name == 'last-page') {
+        return (
+            <svg xmlns="http://www.w3.org/2000/svg" height={size} width={size} viewBox="0 -960 960 960" ><path fill={fill} d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z" /></svg>
         )
     }
     return <></>

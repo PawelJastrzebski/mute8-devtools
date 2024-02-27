@@ -26,16 +26,23 @@ class EventsListController {
     }
 
     rewind(moveBy: number, scrollTo: boolean = true) {
-        console.log('rewind', moveBy)
         const cursor = this.getSelectedCursor() ?? this.events.length - 1;
         let next = cursor + moveBy;
-        if (next > this.events.length) next = this.events.length - 1;
+        if (next > this.events.length - 1) next = this.events.length - 1;
         if (next < 0) next = 0;
         this.selectEventByIndex(next, scrollTo)
     }
 
+    selectLast(scrollTo: boolean = true) {
+        this.rewind(this.events.length, scrollTo)
+    }
+
     selectNext(scrollTo: boolean = true) {
         this.rewind(+1, scrollTo)
+    }
+
+    selectCurrent(scrollTo: boolean = true) {
+        this.rewind(0, scrollTo)
     }
 
     selectPrevious(scrollTo: boolean = true,) {
@@ -135,12 +142,9 @@ class EventsListController {
 }
 
 const getExpandView = (event: StoreEvent) => {
-    console.log(event)
     if (event.type == "change" && "_fn" in event.args) {
         const code = event.args._fn
         return <CodeView code={code} id="js-code" />
-
-        return <pre class="js-code">{code}</pre>
     }
 
     const data = event.type == "change" ? event.args ?? [] : event.state;

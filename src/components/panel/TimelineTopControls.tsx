@@ -43,6 +43,7 @@ function TimelineTopControls() {
     const back = () => storageController.previousEvent();
     const paly = () => storageController.toggleOverride();
     const next = () => storageController.nextEvent()
+    const last = () => storageController.lastEvent()
 
     return (
         <div classList={{ "hidden": hidden() }} id="timeline-top-controlls">
@@ -54,6 +55,9 @@ function TimelineTopControls() {
             </Button>
             <Button data-tooltip="Next Event (D)" onClick={next} disabled={disableNext} >
                 <Icon iconName={() => 'keybord-tab'} size={iconSize} />
+            </Button>
+            <Button data-tooltip="Last Event (Alt + D)" onClick={last} disabled={() => false} >
+                <Icon iconName={() => 'last-page'} size={iconSize} />
             </Button>
         </div>
     )

@@ -177,6 +177,10 @@ class StorageController {
             this.selectEvent(this.selected.get(+1))
         }
     }
+    lastEvent() {
+        if (!this.selected) return
+        this.selectEvent(this.selected.getLast())
+    }
     previousEvent() {
         if (!this.selected) return
         if (this.selected.has(-1)) {

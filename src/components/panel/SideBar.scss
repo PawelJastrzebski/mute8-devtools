@@ -36,9 +36,31 @@
     display: none;
     overflow: hidden;
     flex-direction: column;
+    transition: width var(--transition-ui);
+
+    > div {
+        min-width: 280px !important
+    }
+
+    @media screen and (max-width: 700px) {
+        width: 240px;
+
+        > div {
+            min-width: 240px !important
+        }
+    }
 
     &.visible {
         display: flex;
+    }
+
+    &.hidden {
+        display: flex;
+        width: 0px;
+    }
+
+    &.none {
+        display: none;
     }
 
     .filter {

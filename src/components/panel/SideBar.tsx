@@ -6,6 +6,7 @@ import { newStore } from "mute8-solid"
 import Button from "../Button"
 import { overrideController } from "../../services/OverrideController"
 import { router } from "../../services/Router"
+import { eventsListController } from "../../services/EventsListController"
 
 const setFilterPhraseCache = (phrase: string) => localStorage.setItem("-phrase-cache-", phrase);
 const getFilterPhraseCache = () => localStorage.getItem("-phrase-cache-") ?? "";
@@ -56,6 +57,10 @@ export const toggleSelectedStoreByListIndex = (index: number) => {
     if (!store) return;
     const isSelected = storageController.selected?.label === store.label;
     storageController.selectStore(isSelected ? null : store.label)
+
+    if (isSelected && router.eventStackVersion === "visible") {
+        eventsListController.selectCurrent()
+    }
 }
 
 // @ts-ignore
@@ -101,7 +106,7 @@ function StorageListItem(props: {
 }
 
 function SideBar() {
-    const [isConnected,] = router.solid.useOne("isConnected")
+    const sideBarClass = router.solid.select(v => v.sideBarVersion)
     const [list,] = storageList.solid.use()
     const [filterPhrase,] = storageList.solid.useOne("filterPhrase")
     const components = createMemo(() => {
@@ -116,7 +121,7 @@ function SideBar() {
         })
     })
     return (
-        <div classList={{ "visible": isConnected() }} id="side-bar">
+        <div class={sideBarClass()} id="side-bar">
             <div class="filter top-bar-style">
                 <Icon iconName={() => 'search'} size={20} opacity={.6} />
                 <input

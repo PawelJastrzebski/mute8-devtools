@@ -1,10 +1,9 @@
-import { toggleEventList } from "../components/panel/EventList";
 import { focusStoreListFilter, toggleSelectedStoreByListIndex, storeListFilterisFocused } from "../components/panel/SideBar";
 import { toggleTimelineUI } from "../components/panel/Timeline";
 import { refreshHostApp } from "./ClientConnector";
 import { eventsListController } from "./EventsListController";
-import { toggleFooter, toggleTopBar } from "./Router";
-import { storageController } from "./StorageController";
+import { router, toggleFooter, toggleTopBar, toogleEventStackVersion, toogleSideBar } from "./Router";
+import { setSelectedMute8StoreCache, storageController } from "./StorageController";
 
 const getRewindValue = (event: KeyboardEvent, value: number) => {
     value = event.ctrlKey ? value * 10 : value;
@@ -14,6 +13,7 @@ const getRewindValue = (event: KeyboardEvent, value: number) => {
 const handleEvent = (event: KeyboardEvent) => {
     const c = event.code;
     const isLongPress = event.repeat;
+    const alt = event.altKey;
 
     // https://stackoverflow.com/questions/8916620/disable-arrow-key-scrolling-in-users-browser
     if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(c) > -1) event.preventDefault();
@@ -24,7 +24,7 @@ const handleEvent = (event: KeyboardEvent) => {
     const toggleOverride = c == "Space";
     if (!!storageController.selected) {
         if (nextEvent) {
-            storageController.rewindToEvent(getRewindValue(event, +1))
+            alt ? storageController.latestEvent() : storageController.rewindToEvent(getRewindValue(event, +1))
         }
         if (previousEvent) {
             storageController.rewindToEvent(getRewindValue(event, -1))
@@ -33,9 +33,9 @@ const handleEvent = (event: KeyboardEvent) => {
             storageController.toggleOverride()
         }
 
-    } else {
+    } else if (router.eventStackVersion === "visible") {
         if (nextEvent) {
-            eventsListController.rewind(getRewindValue(event, +1))
+            alt ? eventsListController.selectLast() : eventsListController.rewind(getRewindValue(event, +1))
         }
         if (previousEvent) {
             eventsListController.rewind(getRewindValue(event, -1))
@@ -47,15 +47,16 @@ const handleEvent = (event: KeyboardEvent) => {
 
 
     if (c == "KeyE") {
-        toggleEventList()
+        toogleEventStackVersion()
     }
     if (c == "KeyR") {
         refreshHostApp()
-    }    
+    }
     if (c == "Escape") {
         if (storeListFilterisFocused()) {
             (document.activeElement as HTMLElement)?.blur?.()
         } else {
+            setSelectedMute8StoreCache(null);
             storageController.selectStore(null)
         }
     }
@@ -74,10 +75,13 @@ const handleEvent = (event: KeyboardEvent) => {
     // UI
     if (c == "KeyT") {
         toggleTimelineUI()
-    }    
+    }
     if (c == "KeyI") {
         toggleTopBar()
         toggleFooter()
+    }
+    if (c == "KeyQ") {
+        toogleSideBar()
     }
 
     // Exit app
