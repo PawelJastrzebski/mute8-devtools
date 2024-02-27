@@ -51,9 +51,11 @@ export const focusStoreListFilter = () => {
     return true
 }
 
-export const selectStoreByListIndex = (index: number) => {
+export const toggleSelectedStoreByListIndex = (index: number) => {
     const store = storageList.list[index]
-    if (!!store) storageController.selectStore(store.label)
+    if (!store) return;
+    const isSelected = storageController.selected?.label === store.label;
+    storageController.selectStore(isSelected ? null : store.label)
 }
 
 // @ts-ignore
@@ -82,12 +84,14 @@ function StorageListItem(props: {
     const [events,] = store.solid.useOne("events")
     const [selected,] = store.solid.useOne("selected")
     const centerButton = store.solid.select(s => s.overrided ? "paly-circle" : "pause")
+    const centerButtonTooltip = store.solid.select(s => !s.overrided ? "Override" : "Resume")
+    const tollgeOverrideMode = () => overrideController.setOverride(props.label);
     return (
         <div tabindex={props.tabindex} classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
                 <div onclick={() => props.onSelect(props.label)} class="nav-label"> {props.label}</div>
                 {/* <SwitchButton color="#7700aa" /> */}
-                <Button class="gray-button" onClick={() => overrideController.setOverride(props.label)} disabled={() => false} >
+                <Button data-tooltip-left-flat={centerButtonTooltip()} class="gray-button" onClick={tollgeOverrideMode} disabled={() => false} >
                     <Icon iconName={centerButton} size={20} />
                 </Button>
             </div>
@@ -117,7 +121,7 @@ function SideBar() {
     return (
         <div classList={{ "visible": isConnected() }} id="side-bar">
             <div class="filter top-bar-style">
-                <Icon iconName={() => 'search'} size={20} />
+                <Icon iconName={() => 'search'} size={20} opacity={.6} />
                 <input
                     id={filterId}
                     tabindex={0}

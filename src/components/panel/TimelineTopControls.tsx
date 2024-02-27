@@ -40,15 +40,19 @@ function TimelineTopControls() {
     const ovverrideMode = topControls.solid.select(v => v.ovverrideMode)
     const centerIconName = () => ovverrideMode() === "play" ? "paly-circle" : "pause"
 
+    const back = () => storageController.previousEvent();
+    const paly = () => storageController.toggleOverride();
+    const next = () => storageController.nextEvent()
+
     return (
         <div classList={{ "hidden": hidden() }} id="timeline-top-controlls">
-            <Button onClick={() => storageController.previousEvent()} disabled={disablePrevious} >
+            <Button data-tooltip="Previous Event" onClick={back} disabled={disablePrevious} >
                 <Icon iconName={() => 'keybord-tab'} flipX={true} size={iconSize} />
             </Button>
-            <Button onClick={() => storageController.toggleOverride()} disabled={() => ovverrideMode() == "disabled"} >
+            <Button  data-tooltip={ovverrideMode() == "pause" ? "Override" : "Resume"} onClick={paly} disabled={() => ovverrideMode() == "disabled"} >
                 <Icon iconName={centerIconName} size={iconSize} />
             </Button>
-            <Button onClick={() => storageController.nextEvent()} disabled={disableNext} >
+            <Button data-tooltip="Next Event" onClick={next} disabled={disableNext} >
                 <Icon iconName={() => 'keybord-tab'} size={iconSize} />
             </Button>
         </div>

@@ -77,11 +77,19 @@ class Virtualizer {
         }
     }
 
-    visibleOffset(item: number): number {
-        const index = this.items.indexOf(item)
+    visibleRange(): [number, number] {
         const start = this.getItemsOffset() - 1;
         const end = start + (this.getItemsToRender() - 2);
-        console.log("i", index, item, this.items)
+        return [start, end]
+    }
+
+    indexOf(item: number): number {
+        return this.items.indexOf(item)
+    }
+
+    visibleOffset(item: number): number {
+        const index = this.indexOf(item)
+        const [start, end] = this.visibleRange()
 
         const fromTop = index - start;
         const fromBottom = end - index;
@@ -97,9 +105,9 @@ class Virtualizer {
     }
 
     scrollTo(item: number | undefined) {
+        console.log("scrollTo", item)
         if (item == undefined) return;
         const offset = this.visibleOffset(item)
-        console.log(offset)
         if (this.parentRef && offset != 0) {
             this.parentRef.scrollTo({ top: this.parentRef.scrollTop - (offset * this.height) })
         }

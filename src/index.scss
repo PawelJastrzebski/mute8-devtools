@@ -98,7 +98,6 @@ body {
   .icon {
     width: 30px;
     height: 30px;
-    opacity: .8;
   }
 }
 
@@ -117,21 +116,6 @@ input {
   }
 }
 
-.tooltip-style {
-  display: block;
-  background-color: var((--gray-color));
-  border-radius: 5px;
-  color: white;
-  font-size: .9rem;
-  position: absolute;
-  padding: 5px 8px;
-  white-space: nowrap;
-  opacity: 0;
-  border: 1px solid var(--main-color);
-  z-index: 99999;
-  visibility: hidden;
-}
-
 .nav-label {
   cursor: pointer;
   color: rgb(212, 212, 212);
@@ -144,42 +128,47 @@ input {
   }
 }
 
-// tooltip
-[data-tooltip]:hover:after {
-  opacity: 1;
-  transition: all 0.1s ease 1.5s;
-  visibility: visible;
+
+@mixin tooltip-style {
+  display: block;
+  background-color: var(--gray-color);
+  border-radius: 5px;
+  color: white;
+  font-size: .8rem;
+  position: absolute;
+  padding: 8px 8px;
+  white-space: nowrap;
+  opacity: 0;
+  border: 1px solid var(--main-color);
+  z-index: 99900;
+  pointer-events: none;
+  user-select: none;
 }
 
-[data-tooltip]:after {
-  content: attr(data-tooltip);
-  bottom: -1.6em;
-  left: 90%;
-  @extend .tooltip-style;
+@mixin newTooltip($name, $bottom, $left, $right) {
+  [#{$name}]:hover:after {
+    opacity: 1;
+    transition: all 0.1s ease 1.5s;
+    visibility: visible;
+  }
+
+  [#{$name}]:after {
+    content: attr(#{$name});
+    bottom: $bottom;
+    left: $left;
+    right: $right;
+    @include tooltip-style;
+  }
+
+  [#{$name}] {
+    position: relative;
+  }
 }
 
-[data-tooltip] {
-  position: relative;
-}
+@include newTooltip(data-tooltip, -1.6em, 90%, unset);
+@include newTooltip(data-tooltip-left, -1.6em, unset, 90%);
+@include newTooltip(data-tooltip-left-flat, 0, unset, 90%);
 
-[data-tooltip-left]:hover:after {
-  opacity: 1;
-  transition: all 0.1s ease 1.5s;
-  visibility: visible;
-}
-
-[data-tooltip-left]:after {
-  content: attr(data-tooltip-left);
-  bottom: -1.6em;
-  right: 90%;
-  @extend .tooltip-style;
-}
-
-[data-tooltip-left] {
-  position: relative;
-}
-
-// ScrollBar
 
 .monaco-editor {
 
@@ -197,6 +186,7 @@ input {
   }
 }
 
+// ScrollBar
 div {
 
   &:hover {

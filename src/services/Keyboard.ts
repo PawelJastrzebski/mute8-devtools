@@ -1,6 +1,7 @@
 import { toggleEventList } from "../components/panel/EventList";
-import { focusStoreListFilter, selectStoreByListIndex, storeListFilterisFocused } from "../components/panel/SideBar";
+import { focusStoreListFilter, toggleSelectedStoreByListIndex, storeListFilterisFocused } from "../components/panel/SideBar";
 import { refreshHostApp } from "./ClientConnector";
+import { eventsListController } from "./EventsListController";
 import { storageController } from "./StorageController";
 
 const getRewindValue = (event: KeyboardEvent, value: number) => {
@@ -12,16 +13,37 @@ const handleEvent = (event: KeyboardEvent) => {
     const c = event.code;
     const isLongPress = event.repeat;
 
+    // https://stackoverflow.com/questions/8916620/disable-arrow-key-scrolling-in-users-browser
+    if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(c) > -1) event.preventDefault();
+
     // Event preview & controlls
-    if (c == "ArrowRight" || c == "ArrowUp" || c == "KeyD" || c == "KeyW") {
-        storageController.rewindToEvent(getRewindValue(event, +1))
+    const nextEvent = c == "ArrowRight" || c == "ArrowUp" || c == "KeyD" || c == "KeyW";
+    const previousEvent = c == "ArrowLeft" || c == "ArrowDown" || c == "KeyA" || c == "KeyS";
+    const toggleOverride = c == "Space";
+    if (!!storageController.selected) {
+        if (nextEvent) {
+            storageController.rewindToEvent(getRewindValue(event, +1))
+        }
+        if (previousEvent) {
+            storageController.rewindToEvent(getRewindValue(event, -1))
+        }
+        if (toggleOverride) {
+            storageController.toggleOverride()
+        }
+
+    } else {
+        if (nextEvent) {
+            eventsListController.rewind(getRewindValue(event, +1))
+        }
+        if (previousEvent) {
+            eventsListController.rewind(getRewindValue(event, -1))
+        }
+        if (toggleOverride) {
+            eventsListController.toggleOverrideSelected()
+        }
     }
-    if (c == "ArrowLeft" || c == "ArrowDown" || c == "KeyA" || c == "KeyS") {
-        storageController.rewindToEvent(getRewindValue(event, -1))
-    }
-    if (c == "Space") {
-        storageController.toggleOverride()
-    }
+
+
     if (c == "KeyE") {
         toggleEventList()
     }
@@ -44,7 +66,7 @@ const handleEvent = (event: KeyboardEvent) => {
     }
     if (c.startsWith("Digit")) {
         const index = Number(c.replace("Digit", ""))
-        selectStoreByListIndex(index - 1)
+        toggleSelectedStoreByListIndex(index - 1)
     }
 
     // Exit app

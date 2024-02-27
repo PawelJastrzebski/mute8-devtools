@@ -51,7 +51,7 @@ function MonacoEditorPreview() {
                     {eventInfo()}
                 </div>
                 <div class="right-icons">
-                    <Icon size={20} iconName={() => "close"} onClick={onClose} />
+                    <Icon data-tooltip-left="Close" size={20} iconName={() => "close"} onClick={onClose} />
                     <CloseEventListIcon />
                 </div>
             </div>

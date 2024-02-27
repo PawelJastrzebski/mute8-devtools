@@ -65,7 +65,7 @@ export function FullStatePreview() {
                     <div class="type-info wrapper">Full State</div>
                     <Icon data-tooltip="Collapse All" size={20} iconName={() => "collapse"} onClick={collapseFullStatePreview} />
                     <Icon data-tooltip="Expand All" size={20} iconName={() => "expand"} onClick={expandFullStatePreview} />
-                    <Icon data-tooltip="Copy" size={20} iconName={() => "copy"} onClick={onCopy} />
+                    <Icon data-tooltip="Copy Json" size={20} iconName={() => "copy"} onClick={onCopy} />
                 </div>
                 <div class="right-stats">
                     <div data-tooltip-left="Stores" class="type-info wrapper">Stores: {storesCount()}</div>

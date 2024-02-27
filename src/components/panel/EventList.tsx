@@ -47,7 +47,7 @@ export function EventList() {
                 <div class="icons">
                     <Icon data-tooltip-left="Scroll Down" size={20} iconName={() => "down"} onClick={scrollDown} />
                     <Icon data-tooltip-left="Scroll Up" size={20} iconName={() => "up"} onClick={scrollUp} />
-                    <Icon data-tooltip-left="Events Stack" size={20} iconName={() => "close"} onClick={toggleEventList} />
+                    <Icon data-tooltip-left="Close" size={20} iconName={() => "close"} onClick={toggleEventList} />
                 </div>
             </div>
             <div class="body">
