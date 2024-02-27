@@ -73,7 +73,7 @@ export function FullStatePreview() {
                     <CloseEventListIcon />
                 </div>
             </div>
-            <div class="code json-view">
+            <div class="json-view">
                 {codeNode()}
             </div>
         </div>

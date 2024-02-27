@@ -26,15 +26,21 @@ json-viewer {
     --highlight-color: #6fb3d2;
 }
 
-json-viewer {
-    padding: 3px 0 20px;
+.json-view-div{
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+
+    json-viewer {
+        flex: 1;
+        padding: 10px 5px 10px;
+        background-color: var(--bg-color);
+        height: calc(100% - 5px);
+    }
 }
 
 .key .collapsable::before {
     display: none;
-}
-
-.json-view-div {
-    height: 100%;
-    overflow: scroll;
 }

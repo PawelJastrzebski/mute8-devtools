@@ -33,13 +33,15 @@
         }
     }
 
-    >div.code.json-view {
-        height: 100%;
+    .json-view {
         overflow: auto;
-        flex: unset;
-        padding: 5px;
-        user-select: auto;
-        box-shadow: unset;
+        padding: 1px 0 5px 0;
+
+        json-viewer {
+            margin-bottom: 20px;
+            height: fit-content;
+        }
+
     }
 
     .devtools-disconnect-info {
