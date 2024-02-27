@@ -6,6 +6,7 @@ import { overrideController } from "./OverrideController";
 import { storageController } from "./StorageController";
 import Icon from "../components/Icon";
 import { JsonView } from "../components/JsonView";
+import { CodeView } from "../components/CodeView";
 
 class EventsListController {
     readonly virtualizer = newVirtualizer({
@@ -103,16 +104,7 @@ class EventsListController {
 
         let expnadedNode = <></>
         if (this.expnadedEvent?.id == event.id) {
-            const data = event.type == "change" ? event.args ?? [] : event.state;
-            expnadedNode = (
-                <div class="expanded">
-                    <JsonView
-                        id={event.id + "-args-preview"}
-                        preview={false}
-                        expand={"0"}
-                        data={() => data} />
-                </div>
-            )
+            expnadedNode = <div class="expanded">{getExpandView(event)}</div>
         }
 
         const onExpand = (e: MouseEvent) => {
@@ -141,5 +133,25 @@ class EventsListController {
         )
     }
 }
+
+const getExpandView = (event: StoreEvent) => {
+    console.log(event)
+    if (event.type == "change" && "_fn" in event.args) {
+        const code = event.args._fn
+        return <CodeView code={code} id="js-code" />
+
+        return <pre class="js-code">{code}</pre>
+    }
+
+    const data = event.type == "change" ? event.args ?? [] : event.state;
+    return (
+        <JsonView
+            id={event.id + "-args-preview"}
+            wrapLine={false}
+            expand={"0"}
+            data={() => data} />
+    )
+}
+
 
 export const eventsListController = new EventsListController()

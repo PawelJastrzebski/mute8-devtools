@@ -1,3 +1,4 @@
+import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 // Event Types
 export interface InitStateEvent {
     id: number,
@@ -14,7 +15,7 @@ export interface ChangeStateEvent {
     oldState: object
     state: object,
     actionName: string | undefined,
-    args: any[] | undefined,
+    args: Types.ChangeStateCallArgs,
     time: number
 }
 export type StoreEvent = InitStateEvent | ChangeStateEvent

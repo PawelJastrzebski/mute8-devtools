@@ -46,15 +46,15 @@ function TimelineTopControls() {
 
     return (
         <div classList={{ "hidden": hidden() }} id="timeline-top-controlls">
-            <Button data-tooltip="Previous Event" onClick={back} disabled={disablePrevious} >
+            <Button data-tooltip="Previous Event (A)" onClick={back} disabled={disablePrevious} >
                 <Icon iconName={() => 'keybord-tab'} flipX={true} size={iconSize} />
             </Button>
             <Button  data-tooltip={ovverrideMode() == "pause" ? "Override" : "Resume"} onClick={paly} disabled={() => ovverrideMode() == "disabled"} >
                 <Icon iconName={centerIconName} size={iconSize} />
             </Button>
-            <Button data-tooltip="Next Event" onClick={next} disabled={disableNext} >
+            <Button data-tooltip="Next Event (D)" onClick={next} disabled={disableNext} >
                 <Icon iconName={() => 'keybord-tab'} size={iconSize} />
-            </Button>
+            </Button>2
         </div>
     )
 }

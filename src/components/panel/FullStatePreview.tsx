@@ -52,7 +52,7 @@ export function FullStatePreview() {
 
     const codeNode = createMemo(() => {
         if (isConnected()) {
-            return <JsonView id={fullStatePreview} data={storeJson} />
+            return <JsonView id={fullStatePreview} data={storeJson} wrapLine={false}/>
         }
 
         return <div class="devtools-disconnect-info">Disconnected from application</div>

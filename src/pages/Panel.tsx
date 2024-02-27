@@ -11,7 +11,7 @@ export default function Panel() {
             <TopBar>
                 <div style="display: flex">
                     <Icon
-                        data-tooltip-left="Refresh Application"
+                        data-tooltip-left="Refresh Application (R)"
                         onClick={refreshHostApp}
                         iconName={() => 'refresh'}
                         size={24}

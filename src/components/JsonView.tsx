@@ -17,21 +17,19 @@ ul { margin: 0 }
 .key.collapsable:before { color: #b3b3b3 }
 `
 
-const styleNoPreview = document.createElement('style')
-styleNoPreview.innerHTML = `
+const sytleNoWrap = document.createElement('style')
+sytleNoWrap.innerHTML = `
  ul { margin: 0 }
 .key.collapsable:before { color: #b3b3b3 }
-.preview { 
+* { 
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
  }
 `
 
-export function JsonView(props: { id: string, data: () => object, preview?: boolean, expandAll?: boolean, expand?: string }) {
+export function JsonView(props: { id: string, data: () => object, wrapLine?: boolean, expandAll?: boolean, expand?: string }) {
     let ref: any;
     onMount(() => {
-        ref.shadowRoot.appendChild(props.preview ? style : styleNoPreview);
+        ref.shadowRoot.appendChild(props.wrapLine ? style : sytleNoWrap);
         if (!!props.expandAll) expandJsonViewer(props.id)
         if (!!props.expand) getJsonViewer(props.id)?.expand(props.expand)
     })

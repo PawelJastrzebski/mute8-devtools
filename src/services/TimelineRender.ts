@@ -56,6 +56,7 @@ class TimelineRender {
     }
 
     init() {
+        if (!this.canvas) return;
         this.canvas = document.getElementById(this.canvasId) as HTMLCanvasElement;
         this.canvas.removeEventListener("wheel", this.handleMouseWheel.bind(this));
         this.canvas.addEventListener("wheel", this.handleMouseWheel.bind(this));
