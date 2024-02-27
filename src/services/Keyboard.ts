@@ -3,6 +3,7 @@ import { focusStoreListFilter, toggleSelectedStoreByListIndex, storeListFilteris
 import { toggleTimelineUI } from "../components/panel/Timeline";
 import { refreshHostApp } from "./ClientConnector";
 import { eventsListController } from "./EventsListController";
+import { toggleFooter, toggleTopBar } from "./Router";
 import { storageController } from "./StorageController";
 
 const getRewindValue = (event: KeyboardEvent, value: number) => {
@@ -70,9 +71,13 @@ const handleEvent = (event: KeyboardEvent) => {
         toggleSelectedStoreByListIndex(index - 1)
     }
 
-    // Timelin
+    // UI
     if (c == "KeyT") {
         toggleTimelineUI()
+    }    
+    if (c == "KeyI") {
+        toggleTopBar()
+        toggleFooter()
     }
 
     // Exit app

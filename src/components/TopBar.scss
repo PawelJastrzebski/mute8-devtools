@@ -6,6 +6,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: height 200ms;
+
+    &.small {
+        height: 40px;
+        font-size: .8rem;
+
+        #small-logo {
+            height: 28px;
+            width: 60px;
+        }
+    }
 
     .left-side{
         display: flex;
@@ -28,4 +39,5 @@
     background-repeat: no-repeat;
     margin-right: 5px;
     margin-left: 1px;
+    transition: 200ms;
   }

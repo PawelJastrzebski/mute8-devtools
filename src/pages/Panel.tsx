@@ -1,3 +1,4 @@
+import Footer from '../components/Footer'
 import Icon from '../components/Icon'
 import TopBar from '../components/TopBar'
 import EventPreview from '../components/panel/EventPreview'
@@ -14,7 +15,7 @@ export default function Panel() {
                         data-tooltip-left="Refresh Application (R)"
                         onClick={refreshHostApp}
                         iconName={() => 'refresh'}
-                        size={24}
+                        size={22}
                     />
                 </div>
             </TopBar>
@@ -23,6 +24,7 @@ export default function Panel() {
                 <EventPreview />
             </div>
             <Timeline />
+            <Footer />
         </>
     )
 }

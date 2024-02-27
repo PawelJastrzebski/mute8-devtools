@@ -4,7 +4,14 @@
     justify-content: center;
     align-items: center;
     height: 66px;
-    padding: 18px;
-    background-color: var(--main-color);
+    background-color: var(--main-color-dark);
+    transition: height 200ms;
+
+    &.small {
+        height: 2px;
+        > * {
+            opacity: 0;
+        }
+    }
 }
 

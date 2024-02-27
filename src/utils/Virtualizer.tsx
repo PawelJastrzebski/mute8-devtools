@@ -105,7 +105,6 @@ class Virtualizer {
     }
 
     scrollTo(item: number | undefined) {
-        console.log("scrollTo", item)
         if (item == undefined) return;
         const offset = this.visibleOffset(item)
         if (this.parentRef && offset != 0) {

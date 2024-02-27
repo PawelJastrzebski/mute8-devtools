@@ -1,7 +1,7 @@
 :root {
   --main-color: #FF004C;
   --main-color-06: #ff004caf;
-  --main-color-dark: #d3003f;
+  --main-color-dark: #cc0340;
   --main-color-darkest: #b30036;
 
   --bg-color-light: #232325;
@@ -52,7 +52,6 @@ body {
   justify-content: stretch;
   align-items: stretch;
   flex-direction: column;
-  border-bottom: 4px solid var(--main-color);
 
   .body {
     height: 0px;
