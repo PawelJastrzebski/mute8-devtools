@@ -138,3 +138,13 @@
 
     }
 }
+
+#show-event-list-button {
+    width: 30px;
+    transition: var(--transition-ui);
+    &.hidden {
+        opacity: 0;
+        width: 0px;
+        pointer-events: none;
+    }
+}

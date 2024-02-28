@@ -83,7 +83,7 @@ class TimelineRender {
             view: this.canvas,
             resizeTo: wrapper,
             autoStart: true,
-            backgroundColor: "#242526",
+            backgroundColor: "#232325", // var(--bg-color-light)
         });
         app.ticker.maxFPS = 60
         app.ticker.minFPS = 10

@@ -29,6 +29,7 @@
         }
 
         .top {
+            padding-right: 0px;
 
             .event-info {
                 flex: 1;
@@ -38,7 +39,7 @@
                 padding-right: 5px;
                 min-width: 180px;
                 font-size: .95rem;
-                overflow: hidden;
+                white-space: nowrap;
 
                 .stats {
                     text-align: center;
@@ -58,9 +59,12 @@
             }
 
             .right-icons{
-                flex-basis: 40px;
+                flex-basis: 30px;
+                padding-right: 0.4rem;
                 display: flex;
                 justify-content: flex-end;
+                background-color: var(--bg-color);
+                z-index: 400;
             }
         }
 
@@ -77,6 +81,32 @@
 
             > * {
                 z-index: 0;
+            }
+        }
+
+        .store-label {
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            padding: 8px 10px;
+            color: var(--main-color);
+            background-color: var(--gray-color-dark);
+            border: 1px solid var(--main-color);
+            margin: 20px;
+            pointer-events: none;
+            user-select: none;
+            transition: 300ms ease-in-out;
+            border-radius: 10px;
+            font-size: .8rem;
+            opacity: .75;
+            cursor: default;
+
+            &.hidden {
+                opacity: 0;
+            }
+
+            &:hover {
+                opacity: 0;
             }
         }
 

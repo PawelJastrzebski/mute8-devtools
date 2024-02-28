@@ -41,7 +41,7 @@
         width: 100%;
         height: 40px;
         background-color: var(--gray-color);
-        transition: opacity 300ms;
+        transition: opacity var(--transition-ui);
 
         &.hidden {
             opacity: 0.005;

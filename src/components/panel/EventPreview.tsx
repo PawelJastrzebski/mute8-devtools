@@ -8,6 +8,7 @@ import Icon from "../Icon"
 import { FullStatePreview } from "./FullStatePreview"
 import { StoreEvent } from "../../services/StoregeEvent"
 import { CloseEventListIcon, EventList } from "./EventList"
+import { router } from "../../services/Router"
 
 export const eventPreview = newStore({
     value: {
@@ -20,22 +21,31 @@ export const eventPreview = newStore({
     }
 })
 
-function MonacoEditorPreview() {
-    const [event,] = eventPreview.solid.useOne("event")
-    const [cursor,] = topControls.solid.useOne("cursor")
-    const [total,] = topControls.solid.useOne("total")
+function MonacoEditorPreview(props: { event: () => StoreEvent | null }) {
+    const cursorInfo = createMemo(() => {
+        const [cursor,] = topControls.solid.useOne("cursor")
+        const [total,] = topControls.solid.useOne("total")
+        return <div data-tooltip="Selected/Total" class="stats">{cursor()}/{total()}</div>
+    });
 
     const eventInfo = createMemo(() => {
-        const e = event()
+        const e = props.event()
         if (!e) return <></>;
         const t = timestamp("HH:mm:ss ms", new Date(e.time))
         return (
             <>
-                <div data-tooltip="Selected/Total" class="stats">{cursor()}/{total()}</div>
+                {cursorInfo}
                 <div data-tooltip="Event Type" class="type-info wrapper">{e.type}</div>
                 <div data-tooltip="Event Timestamp" class="timestamp wrapper">{t}ms</div>
             </>
         )
+    })
+
+    const storeLabel = createMemo(() => {
+        const hiddenClass = router.solid.select(v => v.eventStackVersion == "visible" ? "hidden" : "")
+        const e = props.event()
+        if (!e) return <></>;
+        return <span class={`store-label ${hiddenClass()}`}>{e.label}</span>
     })
 
     const onClose = () => {
@@ -56,12 +66,13 @@ function MonacoEditorPreview() {
                 </div>
             </div>
             <div id="code" class="code"></div>
+            {storeLabel}
         </>
     )
 }
 
 function EventPreview() {
-    const [event,] = eventPreview.solid.useOne("event")
+    const event = eventPreview.solid.select(v => v.event)
     const showCodePreview = () => !event();
     return (
         <>
@@ -70,7 +81,7 @@ function EventPreview() {
                     <FullStatePreview />
                 </div>
                 <div classList={{ "content": true, "hidden": showCodePreview() }}>
-                    <MonacoEditorPreview />
+                    <MonacoEditorPreview event={event} />
                 </div>
             </div>
             <EventList />

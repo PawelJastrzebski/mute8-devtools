@@ -20,8 +20,8 @@ const scrollUp = () => { eventsListController.scrollTop() }
 const scrollDown = () => { eventsListController.scrollBottom() }
 
 export function CloseEventListIcon() {
-    const enabled = router.solid.select(v => v.eventStackVersion === "visible")
-    return <div style={{ "display": enabled() ? "none" : "flex" }}>
+    const hiddenCalss = router.solid.select(v => v.eventStackVersion === "visible" ? "hidden" : "")
+    return <div id="show-event-list-button" class={hiddenCalss()}>
         <Icon
             data-tooltip-left="Events Stack (E)"
             size={20} iconName={() => "list"}
