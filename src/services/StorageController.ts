@@ -5,7 +5,9 @@ import { topControls } from "../components/panel/TimelineTopControls";
 import { storageList } from "../components/panel/SideBar";
 import { timelineRender } from "./TimelineRender";
 import { overrideController } from "./OverrideController";
-import { dashboardStore } from "../components/panel/Dashboard";
+import { expandFullStatePreview, storeFullPreview } from "../components/panel/FullStatePreview";
+import { StoreEvent } from "./StoregeEvent";
+import { eventsListController } from "./EventsListController";
 
 const key = "-selected-store-";
 export const setSelectedMute8StoreCache = (phrase: string | null) => {
@@ -34,21 +36,6 @@ const createListItemStore = () => {
     })
 }
 type Mute8StoreInstance = ReturnType<typeof createListItemStore>;
-
-// Event Types
-interface InitStateEvent {
-    type: "init-state"
-    state: object
-    time: number
-}
-
-interface ChangeStateEvent {
-    type: "change-state"
-    oldState: object
-    state: object,
-    time: number
-}
-export type StoreEvent = InitStateEvent | ChangeStateEvent
 
 export class Mute8Storage {
     label: string
@@ -79,6 +66,12 @@ export class Mute8Storage {
     getLast(): StoreEvent | null {
         this.cursor = Math.max(this.events.length - 1, 0)
         return this.getSelected()
+    }
+
+    setCursorById(eventId: number) {
+        const item = this.events.find(e => e.id === eventId);
+        if (!item) return;
+        this.cursor = (this.events.indexOf(item) ?? this.cursor)
     }
 
     getCursor(): number {
@@ -134,18 +127,19 @@ class StorageController {
         // reset
         this.registry = new Map()
         this.selected = null;
+        eventsListController.reset()
 
         // init defs
         for (let def of init.definitions) {
             this.getOrCreateStorage(def.label)
         }
-        dashboardStore.actions.reset(this.registry.size)
+        storeFullPreview.actions.reset(this.registry.size)
 
         // init ovverrides
         overrideController.setInit(init.overrides)
         storageList.actions.updateAll(this.registry)
-
         setTimeout(() => this.selectStore(getSelectedMute8StoreCache()), 50)
+        setTimeout(() => expandFullStatePreview(), 200)
     }
     pushStorageEvent(lable: string, event: StoreEvent) {
         const storage = this.getOrCreateStorage(lable);
@@ -155,7 +149,8 @@ class StorageController {
             topControls.actions.updateStatus(this.selected)
             timelineRender.addEvent(newEvent)
         }
-        dashboardStore.actions.incrementEventsCount()
+        storeFullPreview.actions.updateStoreState(lable, event.state)
+        eventsListController.addEvent(event)
     }
 
     // Controls
@@ -182,6 +177,10 @@ class StorageController {
             this.selectEvent(this.selected.get(+1))
         }
     }
+    lastEvent() {
+        if (!this.selected) return
+        this.selectEvent(this.selected.getLast())
+    }
     previousEvent() {
         if (!this.selected) return
         if (this.selected.has(-1)) {
@@ -201,17 +200,21 @@ class StorageController {
             overrideController.setOverride(this.selected.label, true, event)
         }
         this.updateSelectedPreview()
-    }
-    filterList(phrase: string): void {
-        storageList.actions.filter(phrase)
+        eventsListController.virtualizer.scrollTo(event?.id)
     }
     updateSelectedPreview() {
         eventPreviewDisplay(this.selected?.getSelected() ?? null)
         topControls.actions.updateStatus(this.selected)
+        eventsListController.virtualizer.rerender()
     }
     toggleOverride() {
         if (!this.selected) return
         overrideController.setOverride(this.selected.label)
+    }
+    isSelectedById(label: string, eventId: number): boolean {
+        if (this.selected?.label !== label) return false;
+        const event = this.selected.getSelected()
+        return event?.id === eventId
     }
 }
 

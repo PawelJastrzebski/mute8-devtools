@@ -1,5 +1,30 @@
 import { createSignal } from "solid-js"
 import "./Timeline.scss"
+import { newStore } from "mute8-solid"
+import { timelineRender } from "../../services/TimelineRender"
+
+const timelineStore = newStore({
+    value: {
+        hidden: true,
+        showUI: false
+    },
+    actions: {
+        showUI(showUI: boolean) {
+            this.showUI = showUI
+            setTimeout(() => this.showUI ? timelineRender.mount() : timelineRender.unmount(), 0)
+            if (this.showUI == false) {
+                this.hidden = true
+            }
+        },
+        show() {
+            this.hidden = false;
+        }
+    }
+})
+
+export const toggleTimelineUI = () => { timelineStore.actions.showUI(!timelineStore.showUI) }
+export const showTimeline = () => { timelineStore.actions.show() }
+
 
 // Pointer controll
 const [x, setX] = createSignal(100)
@@ -19,11 +44,11 @@ window.addEventListener("mousemove", (event: MouseEvent) => {
 window.addEventListener('mouseup', () => setActive(false))
 
 function Timeline() {
-    const [hidden, setHidden] = createSignal(true)
-    setTimeout(() => setHidden(false), 1000);
+    const [hidden,] = timelineStore.solid.useOne("hidden")
+    const showUI = timelineStore.solid.select(v => v.showUI)
 
     return (
-        <div id="timeline">
+        <div classList={{ "showUI": showUI() }} id="timeline">
             <div
                 onMouseDown={() => !active() && (setActive(true))}
                 onMouseUp={() => active() && setActive(false)}
@@ -31,7 +56,7 @@ function Timeline() {
                 class={`pointer ${(active() ? "active" : "")}`}
             >
             </div>
-            <canvas classList={{ "hidden": hidden() }} id="timeline-canvas"></canvas>
+            <div classList={{ "hidden": hidden() }} id="timeline-canvas-wrapper"></div>
         </div>
     )
 }

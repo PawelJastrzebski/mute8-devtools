@@ -1,0 +1,46 @@
+json-viewer {
+    /* Background, font and indentation */
+    --background-color: transparent
+    --color: #f8f8f2;
+    --font-family: "Droid Sans Mono", "monospace", monospace;
+    --font-size: 14px;
+    --indent-size: 2em;
+    --indentguide-size: 1px;
+    --indentguide-style: solid;
+    --indentguide-color: #333;
+    --indentguide-color-active: #333;
+    --indentguide: var(--indentguide-size) var(--indentguide-style) var(--indentguide-color);
+    --indentguide-active: var(--indentguide-size) var(--indentguide-style) var(--indentguide-color-active);
+
+    /* Types colors */
+    --string-color: #ce9178;
+    --number-color: #b5cea8;
+    --boolean-color: #4ba7ef;
+    --null-color: #df9cf3;
+    --property-color: #9cdcfe;
+
+    /* Collapsed node preview */
+    --preview-color: #ffffff5d;
+
+    /* Search highlight color */
+    --highlight-color: #6fb3d2;
+}
+
+.json-view-div{
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+
+    json-viewer {
+        flex: 1;
+        padding: 10px 5px 10px;
+        background-color: var(--bg-color);
+        height: calc(100% - 5px);
+    }
+}
+
+.key .collapsable::before {
+    display: none;
+}

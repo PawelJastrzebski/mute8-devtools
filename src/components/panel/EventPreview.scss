@@ -2,7 +2,6 @@
     color: var(--white-darkest);
     border-radius: 4px;
     padding: 5px 6px;
-    cursor: pointer;
 }
 
 #event-preview {
@@ -12,6 +11,7 @@
     height: 100%;
 
     .content {
+        opacity: 1;
         min-width: 0;
         position: absolute;
         width: 100%;
@@ -19,7 +19,7 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        transition: opacity 200ms;
+        transition: opacity 30ms;
         background-color: var(--bg-color);
 
         &.hidden {
@@ -29,12 +29,7 @@
         }
 
         .top {
-            font-size: .9rem;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            padding: 0 6px;
-            user-select: none;
+            padding-right: 0px;
 
             .event-info {
                 flex: 1;
@@ -42,8 +37,9 @@
                 justify-content: center;
                 gap: 15px;
                 padding-right: 5px;
-                min-width: 350px;
+                min-width: 180px;
                 font-size: .95rem;
+                white-space: nowrap;
 
                 .stats {
                     text-align: center;
@@ -51,18 +47,24 @@
                     color: var(--white-darkest);
                     min-width: 90px;
                 }
-            }
 
-            .icon {
-                width: 30px;
-                height: 30px;
-                opacity: .8;
+                .timestamp {
+                    display: none;
+
+                    @media screen and (min-width: 1170px) {
+                        display: block;
+                    }
+
+                }
             }
 
             .right-icons{
-                flex-basis: 120px;
+                flex-basis: 30px;
+                padding-right: 0.4rem;
                 display: flex;
                 justify-content: flex-end;
+                background-color: var(--bg-color);
+                z-index: 400;
             }
         }
 
@@ -75,6 +77,37 @@
             margin-bottom: 3px;
             position: relative;
             user-select: none;
+            box-shadow: 0px 1px 2px #00000042 inset;
+
+            > * {
+                z-index: 0;
+            }
+        }
+
+        .store-label {
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            padding: 8px 10px;
+            color: var(--main-color);
+            background-color: var(--gray-color-dark);
+            border: 1px solid var(--main-color);
+            margin: 20px;
+            pointer-events: none;
+            user-select: none;
+            transition: 300ms ease-in-out;
+            border-radius: 10px;
+            font-size: .8rem;
+            opacity: .75;
+            cursor: default;
+
+            &.hidden {
+                opacity: 0;
+            }
+
+            &:hover {
+                opacity: 0;
+            }
         }
 
     }

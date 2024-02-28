@@ -3,7 +3,7 @@ import { newStore } from "mute8-solid";
 import { Mute8Storage, storageController } from "../../services/StorageController";
 import Icon from "../Icon"
 import Button from "../Button";
-const iconSize = 22;
+const iconSize = 20;
 
 type OverrideState = "disabled" | "pause" | "play";
 export const topControls = newStore({
@@ -40,16 +40,24 @@ function TimelineTopControls() {
     const ovverrideMode = topControls.solid.select(v => v.ovverrideMode)
     const centerIconName = () => ovverrideMode() === "play" ? "paly-circle" : "pause"
 
+    const back = () => storageController.previousEvent();
+    const paly = () => storageController.toggleOverride();
+    const next = () => storageController.nextEvent()
+    const last = () => storageController.lastEvent()
+
     return (
         <div classList={{ "hidden": hidden() }} id="timeline-top-controlls">
-            <Button onClick={() => storageController.previousEvent()} disabled={disablePrevious} >
+            <Button data-tooltip="Previous Event (A)" onClick={back} disabled={disablePrevious} >
                 <Icon iconName={() => 'keybord-tab'} flipX={true} size={iconSize} />
             </Button>
-            <Button onClick={() => storageController.toggleOverride()} disabled={() => ovverrideMode() == "disabled"} >
+            <Button  data-tooltip={ovverrideMode() == "pause" ? "Override" : "Resume"} onClick={paly} disabled={() => ovverrideMode() == "disabled"} >
                 <Icon iconName={centerIconName} size={iconSize} />
             </Button>
-            <Button onClick={() => storageController.nextEvent()} disabled={disableNext} >
+            <Button data-tooltip="Next Event (D)" onClick={next} disabled={disableNext} >
                 <Icon iconName={() => 'keybord-tab'} size={iconSize} />
+            </Button>
+            <Button data-tooltip="Last Event (Alt + D)" onClick={last} disabled={() => false} >
+                <Icon iconName={() => 'last-page'} size={iconSize} />
             </Button>
         </div>
     )

@@ -1,15 +1,18 @@
 :root {
   --main-color: #FF004C;
-  --main-color-dark: #d3003f;
+  --main-color-06: #ff004caf;
+  --main-color-dark: #cc0340;
   --main-color-darkest: #b30036;
 
+  --bg-color-light: #232325;
   --bg-color: #1B1B1D;
   --bg-color-dark: #1E1E1E;
 
   --white-dark: #dadada;
   --white-darkest: #b3b3b3;
   --gray-color-light: #4a4c4e;
-  --gray-color: #242526;
+  --gray-color: #232425;
+  // --gray-color: #242526;
   --gray-color-dark: #1a1b1b;
   --gray-color-dark-05: #1a1b1b80;
 
@@ -17,6 +20,14 @@
   --logo-dark: url("https://paweljastrzebski.github.io/mute8/img/logo-dark.svg");
   --logo-light: url("https://paweljastrzebski.github.io/mute8/img/logo-light.svg");
   --main-gradient: linear-gradient(0deg, #db0042 0%, #FF004C 100%);
+  --transition-ui: 200ms ease-out;
+
+  --code-color: #9cdcfe;
+  --string-color: #ce9178;
+  --number-color: #b5cea8;
+  --boolean-color: #4ba7ef;
+  --null-color: #df9cf3;
+  --property-color: #9cdcfe;
 }
 
 * {
@@ -42,7 +53,8 @@ body {
   justify-content: stretch;
   align-items: stretch;
   flex-direction: column;
-  border-bottom: 4px solid var(--main-color);
+  min-width: 560px;
+  min-height: 300px;
 
   .body {
     height: 0px;
@@ -58,14 +70,14 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 40px;
-  width: 40px;
+  height: 30px;
+  width: 30px;
   display: flex;
   cursor: pointer;
   transition: 200ms ease-in-out;
   position: relative;
 
-  > svg {
+  >svg {
     transition: 200ms ease-in-out;
   }
 
@@ -82,11 +94,29 @@ body {
   }
 }
 
+.top-bar-style {
+  font-size: .9rem;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  user-select: none;
+  z-index: 1;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2588235294);
+  background-color: var(--bg-color);
+  white-space: nowrap;
+
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+}
+
 input {
   flex: 1;
   padding: 10px;
   border-radius: 12px;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   outline: none;
   background-color: var(--gray-color);
   color: white;
@@ -97,21 +127,6 @@ input {
   }
 }
 
-.tooltip-style {
-  display: block;
-  background-color: var((--gray-color));
-  border-radius: 5px;
-  color: white;
-  font-size: .9rem;
-  position: absolute;
-  padding: 5px 8px;
-  white-space: nowrap;
-  opacity: 0;
-  border: 1px solid var(--main-color);
-  z-index: 99999;
-  visibility: hidden;
-}
-
 .nav-label {
   cursor: pointer;
   color: rgb(212, 212, 212);
@@ -119,68 +134,105 @@ input {
   transition: 200ms ease-in-out;
 
   &:hover {
-      color: var(--main-color);
-      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.151);
+    color: var(--main-color);
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.151);
   }
 }
 
-// tooltip
-[data-tooltip]:hover:after {
-  opacity: 1;
-  transition: all 0.1s ease 0.5s;
-  visibility: visible;
+
+@mixin tooltip-style {
+  display: block;
+  background-color: var(--gray-color);
+  border-radius: 5px;
+  color: white;
+  font-size: .8rem;
+  position: absolute;
+  padding: 8px 8px;
+  white-space: nowrap;
+  opacity: 0;
+  border: 1px solid var(--main-color);
+  z-index: 99900;
+  pointer-events: none;
+  user-select: none;
 }
 
-[data-tooltip]:after {
-  content: attr(data-tooltip);
-  bottom: -1.6em;
-  left: 90%;
-  @extend .tooltip-style;
+@mixin newTooltip($name, $bottom, $left, $right) {
+  [#{$name}]:hover:after {
+    opacity: 1;
+    transition: all 0.1s ease 1.5s;
+    visibility: visible;
+  }
+
+  [#{$name}]:after {
+    content: attr(#{$name});
+    bottom: $bottom;
+    left: $left;
+    right: $right;
+    @include tooltip-style;
+  }
+
+  [#{$name}] {
+    position: relative;
+  }
 }
 
-[data-tooltip] {
-  position: relative;
-}
+@include newTooltip(data-tooltip, -1.6em, 90%, unset);
+@include newTooltip(data-tooltip-left, -1.6em, unset, 90%);
+@include newTooltip(data-tooltip-left-flat, 0, unset, 90%);
 
-[data-tooltip-left]:hover:after {
-  opacity: 1;
-  transition: all 0.1s ease 0.5s;
-  visibility: visible;
-}
 
-[data-tooltip-left]:after {
-  content: attr(data-tooltip-left);
-  bottom: -1.6em;
-  right: 90%;
-  @extend .tooltip-style;
-}
+.monaco-editor {
 
-[data-tooltip-left] {
-  position: relative;
-}
+  .slider.active {
+    background-color: var(--main-color-06) !important;
+  }
 
+  .scrollbar.horizontal {
+    height: 6px !important;
+  }
+
+  .scrollbar.vertical,
+  .decorationsOverviewRuler {
+    width: 6px !important;
+  }
+}
 
 // ScrollBar
+div {
 
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-button {
-  width: 0px;
-  height: 0px;
-}
-::-webkit-scrollbar-thumb {
-  background: #dadadaf6;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:active {
-  background: var(--main-color-dark);
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-  border: 0px none #ffffff;
-  border-radius: 50px;
-}
-::-webkit-scrollbar-corner {
-  background: transparent;
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: #68636381;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-button {
+    width: 0px;
+    height: 0px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    transition: 400ms;
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: var(--main-color-06);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border: 0px none #ffffff;
+    border-radius: 50px;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
 }

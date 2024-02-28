@@ -30,15 +30,37 @@
 }
 
 #side-bar {
-    width: 300px;
+    width: 280px;
     height: 100%;
     border-right: 1px solid rgba(128, 128, 128, 0.089);
     display: none;
     overflow: hidden;
     flex-direction: column;
+    transition: width var(--transition-ui);
+
+    > div {
+        min-width: 280px !important
+    }
+
+    @media screen and (max-width: 700px) {
+        width: 240px;
+
+        > div {
+            min-width: 240px !important
+        }
+    }
 
     &.visible {
         display: flex;
+    }
+
+    &.hidden {
+        display: flex;
+        width: 0px;
+    }
+
+    &.none {
+        display: none;
     }
 
     .filter {
@@ -47,35 +69,37 @@
         padding: 8px;
 
         >input {
+            font-size: .8rem;
             padding-right: 36px;
+            height: 30px;
+            border-radius: 5px;
+            background-color: var(--bg-color-light);
         }
 
         .icon {
             position: absolute;
             right: 0;
             z-index: 10;
-            opacity: .6;
             margin-right: 10px;
-            pointer-events: none;
         }
     }
 
     .items {
         flex: 1;
         min-width: 0;
-        padding: 0 8px;
+        padding: 5px 8px 0 8px;
         overflow: auto;
         overflow-x: hidden;
         margin-bottom: 1px;
 
         .storage-instance {
             min-height: 40px;
-            background-color: var(--gray-color);
-            border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-            border: 2px solid transparent;
+            background-color: var(--bg-color-light);
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 5px;
+            font-size: 1rem;
+            border: 1px solid transparent;
             transition: 200ms;
 
             &.selected {
@@ -85,11 +109,15 @@
             .top {
                 display: flex;
                 justify-content: space-between;
+
+                .mute8-button {
+                    height: 30px;
+                    width: 30px;
+                }
             }
 
             .stats {
                 font-size: .85rem;
-                padding: 8px 0 0 0;
                 color: var(--white-darkest);
 
                 span {

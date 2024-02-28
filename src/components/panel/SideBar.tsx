@@ -6,6 +6,7 @@ import { newStore } from "mute8-solid"
 import Button from "../Button"
 import { overrideController } from "../../services/OverrideController"
 import { router } from "../../services/Router"
+import { eventsListController } from "../../services/EventsListController"
 
 const setFilterPhraseCache = (phrase: string) => localStorage.setItem("-phrase-cache-", phrase);
 const getFilterPhraseCache = () => localStorage.getItem("-phrase-cache-") ?? "";
@@ -14,6 +15,11 @@ interface StorageListItem {
     label: string
     overrided: boolean,
 }
+
+// filter
+let storageListFull = [] as StorageListItem[];
+const filter = (phrase: string) => storageListFull.filter((storage: any) => storage.label.toLocaleLowerCase().startsWith(phrase))
+
 export const storageList = newStore({
     value: {
         filterPhrase: getFilterPhraseCache(),
@@ -21,19 +27,41 @@ export const storageList = newStore({
     },
     actions: {
         updateAll(storagesRegistry: Map<string, Mute8Storage>) {
-            this.list = Array.from(storagesRegistry.values()).map(storage => {
+            storageListFull = Array.from(storagesRegistry.values()).map(storage => {
                 return {
                     label: storage.label,
                     overrided: storage.overrided
                 }
             })
+            this.list = filter(this.filterPhrase)
         },
         filter(phrase: string) {
             setFilterPhraseCache(phrase)
-            this.filterPhrase = phrase;
+            this.filterPhrase = phrase
+            this.list = filter(phrase)
         }
     }
 })
+
+const filterId = "sidebar-storage-filter"
+export const storeListFilterisFocused = () => document.activeElement?.id === filterId
+export const focusStoreListFilter = () => {
+    if (storeListFilterisFocused()) return false;
+    const node = document.getElementById(filterId)
+    node?.focus()
+    return true
+}
+
+export const toggleSelectedStoreByListIndex = (index: number) => {
+    const store = storageList.list[index]
+    if (!store) return;
+    const isSelected = storageController.selected?.label === store.label;
+    storageController.selectStore(isSelected ? null : store.label)
+
+    if (isSelected && router.eventStackVersion === "visible") {
+        eventsListController.selectCurrent()
+    }
+}
 
 // @ts-ignore
 function SwitchButton(props: { color: string }) {
@@ -51,17 +79,22 @@ function SwitchButton(props: { color: string }) {
     )
 }
 
-function StorageListItem(props: { label: string, showOntimeline: boolean, onSelect: (label: string) => void }) {
+function StorageListItem(props: {
+    label: string,
+    showOntimeline: boolean,
+    onSelect: (label: string) => void
+}) {
     const store = storageController.getMute8ViewStore(props.label);
     const [events,] = store.solid.useOne("events")
     const [selected,] = store.solid.useOne("selected")
     const centerButton = store.solid.select(s => s.overrided ? "paly-circle" : "pause")
+    const centerButtonTooltip = store.solid.select(s => !s.overrided ? "Override" : "Resume")
+    const tollgeOverrideMode = () => overrideController.setOverride(props.label);
     return (
         <div classList={{ "storage-instance": true, "selected": selected() }}>
             <div class="top">
                 <div onclick={() => props.onSelect(props.label)} class="nav-label"> {props.label}</div>
-                {/* <SwitchButton color="#7700aa" /> */}
-                <Button class="gray-button" onClick={() => overrideController.setOverride(props.label)} disabled={() => false} >
+                <Button data-tooltip-left-flat={centerButtonTooltip()} class="gray-button" onClick={tollgeOverrideMode} disabled={() => false} >
                     <Icon iconName={centerButton} size={20} />
                 </Button>
             </div>
@@ -73,30 +106,35 @@ function StorageListItem(props: { label: string, showOntimeline: boolean, onSele
 }
 
 function SideBar() {
-    const [isConnected,] = router.solid.useOne("isConnected")
+    const sideBarClass = router.solid.select(v => v.sideBarVersion)
     const [list,] = storageList.solid.use()
     const [filterPhrase,] = storageList.solid.useOne("filterPhrase")
     const components = createMemo(() => {
-        const store = list()
-        return store.list
-            .filter((storage: any) => storage.label.toLocaleLowerCase().startsWith(store.filterPhrase))
-            .map((storage: any) => {
-                return (
-                    <StorageListItem
-                        onSelect={(l) => storageController.selectStore(l)}
-                        label={storage.label}
-                        showOntimeline={storage.showOnTimeline}
-                    />)
-            })
+        return list().list.map((storage: any) => {
+            return (
+                <StorageListItem
+                    onSelect={(l) => storageController.selectStore(l)}
+                    label={storage.label}
+                    showOntimeline={storage.showOnTimeline}
+                />
+            )
+        })
     })
+
+    const onFilterKeyUp = (e: KeyboardEvent) => {
+        storageList.actions.filter((e.target as any).value);
+    }
+
     return (
-        <div classList={{"visible": isConnected()}} id="side-bar">
-            <div class="filter">
-                <Icon iconName={() => 'search'} size={24} />
+        <div class={sideBarClass()} id="side-bar">
+            <div class="filter top-bar-style">
+                <Icon iconName={() => 'search'} size={20} opacity={.6} />
                 <input
+                    id={filterId}
+                    tabindex={0}
                     value={filterPhrase()}
-                    onkeyup={(e) => storageController.filterList((e.target as any).value)}
-                    placeholder="Search Store"
+                    onkeyup={onFilterKeyUp}
+                    placeholder="Filter"
                 ></input>
             </div>
             <div class="items">

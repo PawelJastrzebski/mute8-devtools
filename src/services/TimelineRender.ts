@@ -1,11 +1,12 @@
 import * as PIXI from 'pixi.js';
-import { StoreEvent } from './StorageController';
+import { StoreEvent } from './StoregeEvent';
+import { showTimeline } from '../components/panel/Timeline';
 
+const now = () => new Date().getTime()
 const calcPx = (milis: number, scalePx: number) => {
     const diffInSeconds = (milis) / 1000;
     return diffInSeconds * scalePx;
 }
-
 const between = (min: number, max: number, value: number): number => {
     return Math.min(Math.max(value, min), max)
 }
@@ -27,7 +28,6 @@ class TimelineEvent extends PIXI.Graphics {
         const fromRight = calcPx(timeDiff, this.myScale);
         this.clear()
         if (fromRight <= w) {
-            this.clear()
             this.beginFill("#ddd");
             this.drawRect(w - fromRight, 0, 1, this.app.screen.height);
         }
@@ -36,72 +36,95 @@ class TimelineEvent extends PIXI.Graphics {
         this.myScale = scale;
         this.draw()
     }
-
 }
 
-const now = () => new Date().getTime()
 class TimelineRender {
     // {scale} px per second
-    scale = 200;
+    scale = 100;
     canvas: HTMLCanvasElement | null = null;
     app: PIXI.Application<PIXI.ICanvas> | null = null;
+    renderEvent: TimelineEvent[] = []
+    storeEvents: StoreEvent[] = []
+    constructor(private canvasId: string) {}
 
-    events: TimelineEvent[] = []
-    constructor(private canvasId: string) {
-        document.addEventListener("DOMContentLoaded", this.init.bind(this));
-
+    private handleMouseWheel(e: WheelEvent) {
+        const x = e.deltaY > 0 ? -1 : 1;
+        this.scale = between(1, 1000, this.scale + (this.scale / 20) * x)
     }
 
-    handleMouseWheel(e: WheelEvent) {
-        if (e.deltaY > 0) {
-            this.scale = between(50, 1000, this.scale - 10)
-        } else {
-            this.scale = between(50, 1000, this.scale + 10)
+    private renderTicker() {
+        for (let index = this.renderEvent.length - 1; index >= 0; index--) {
+            this.renderEvent[index].update(this.scale)
         }
     }
 
-    init() {
-        this.canvas = document.getElementById(this.canvasId) as HTMLCanvasElement;
-        this.canvas.removeEventListener("wheel", this.handleMouseWheel.bind(this));
-        this.canvas.addEventListener("wheel", this.handleMouseWheel.bind(this));
-        const canvasSize = this.canvas.getBoundingClientRect();
-        this.app = new PIXI.Application({
-            width: canvasSize.width,
-            height: canvasSize.height,
-            view: this.canvas,
-            resizeTo: this.canvas,
-            background: "#242526",
-        });
-        this.app.ticker.maxFPS = 60
-        this.app.ticker.minFPS = 10
-        this.app.ticker.add(() => {
-            for (const e of this.events) {
-                e.update(this.scale)
-            }
-        })
-
-
+    private fullRerender() {
+        this.renderEvent = [];
+        if (!this.app) return
+        for (const e of this.storeEvents) {
+            const toRender = new TimelineEvent(e, this.app, this.scale);
+            this.app.stage.addChild(toRender)
+            this.renderEvent.push(toRender)
+        }
     }
 
-    clear() {
+    mount() {
+        const wrapper = document.getElementById(this.canvasId) as HTMLCanvasElement;
+        if (!wrapper) return;
+        // create DOM canvas
+        this.canvas = document.createElement("canvas")
+        this.canvas.id = this.canvasId + "-canva"
+        this.canvas.removeEventListener("wheel", this.handleMouseWheel.bind(this));
+        this.canvas.addEventListener("wheel", this.handleMouseWheel.bind(this));
+        this.canvas = wrapper.appendChild(this.canvas)
+
+        // Create app
+        const app = new PIXI.Application({
+            view: this.canvas,
+            resizeTo: wrapper,
+            autoStart: true,
+            backgroundColor: "#232325", // var(--bg-color-light)
+        });
+        app.ticker.maxFPS = 60
+        app.ticker.minFPS = 10
+        app.ticker.add(this.renderTicker.bind(this))
+        this.app = app;
+
+        // render
+        this.fullRerender()
+        showTimeline()
+    }
+
+    unmount() {
+        this.renderEvent = [];
         if (!this.app) return
-        this.events = [];
+        this.app.destroy(true, true)
+        this.app = null;
+        this.canvas = null;
+    }
+
+    // timeline render controll
+
+    clearEvents() {
+        this.storeEvents = [];
+        this.renderEvent = [];
+        if (!this.app) return
         this.app.stage.removeChildren(0, this.app.stage.children.length)
     }
 
-    addEvent(e: StoreEvent, app = this.app) {
-        if (!app) return
-        const event = new TimelineEvent(e, app, this.scale)
-        app.stage.addChild(event)
-        this.events.push(event)
+    addEvent(e: StoreEvent) {
+        this.storeEvents.push(e)
+        if (!this.app) return
+        const event = new TimelineEvent(e, this.app, this.scale)
+        this.renderEvent.push(event)
+        this.app?.stage.addChild(event)
     }
 
     renderAll(events: StoreEvent[]) {
-        this.clear()
+        this.clearEvents()
         for (const e of events) {
             this.addEvent(e)
         }
     }
 }
-
-export const timelineRender = new TimelineRender("timeline-canvas");
+export const timelineRender = new TimelineRender("timeline-canvas-wrapper");

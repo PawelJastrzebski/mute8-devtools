@@ -4,8 +4,8 @@ import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
-import { StoreEvent } from './StorageController'
 import { eventPreview } from '../components/panel/EventPreview'
+import { StoreEvent } from './StoregeEvent'
 
 self.MonacoEnvironment = {
     getWorker(_, label) {
@@ -60,7 +60,8 @@ const commonOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
     value: "",
     language: 'json',
     theme: "mute8-theme",
-    scrollBeyondLastLine: true,
+    lineNumbers: "off",
+    scrollBeyondLastLine: false,
     readOnly: true,
     automaticLayout: true,
     minimap: {
@@ -144,18 +145,17 @@ export const monacoEditor = new MonacoEditor("code", "monaco-editor-standard")
 export const monacoEditorDiff = new MonacoEditorDiff("code", "monaco-editor-diff")
 
 export const eventPreviewDisplay = (event: StoreEvent | null) => {
+    eventPreview.actions.setEvent(event)
     if (event == null) {
         monacoEditor.setHidden(true)
         monacoEditorDiff.setHidden(true)
-    } else if (event.type === 'init-state') {
+    } else if (event.type === 'init') {
         monacoEditor.setCode(toJsonPritty(event.state))
         monacoEditorDiff.setHidden(true)
         monacoEditor.setHidden(false)
-    } else if (event.type === 'change-state') {
+    } else if (event.type === 'change') {
         monacoEditorDiff.setCode(toJsonPritty(event.oldState), toJsonPritty(event.state))
         monacoEditor.setHidden(true)
         monacoEditorDiff.setHidden(false)
     }
-
-    eventPreview.actions.setEvent(event)
 }

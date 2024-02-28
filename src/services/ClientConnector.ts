@@ -2,7 +2,7 @@ import { WindowDialog } from "cors-window"
 import { DevToolsPrivateTypes as Types } from "mute8-plugins"
 import { storageController } from "./StorageController"
 import { overrideController } from "./OverrideController";
-import { router } from "./Router";
+import { router} from "./Router";
 
 export type StateOverrides = Record<string, Types.OverrideState>;
 
@@ -13,7 +13,9 @@ class HostConnector {
     }
 
     init() {
-        if (this.dialog) return;
+        if (this.dialog && this.dialog.isOpen()) {
+            return
+        }
 
         this.dialog = new WindowDialog("devtools");
         this.dialog.onMessage = (data) => this.handleMessage(data as object[])
@@ -27,17 +29,25 @@ class HostConnector {
             } else if (p.devtoolsOptions) {
                 // todo
             } else if (p.stateInit) {
-                storageController.pushStorageEvent(p.stateInit.storageLabel, {
-                    type: "init-state",
-                    state: p.stateInit.state,
-                    time: p.stateInit.time
+                const i = p.stateInit;
+                storageController.pushStorageEvent(i.storageLabel, {
+                    id: i.id,
+                    label: i.storageLabel,
+                    type: "init",
+                    state: i.state,
+                    time: i.time
                 })
             } else if (p.stateChanged) {
-                storageController.pushStorageEvent(p.stateChanged.storageLabel, {
-                    type: "change-state",
-                    oldState: p.stateChanged.oldState,
-                    state: p.stateChanged.newState,
-                    time: p.stateChanged.time
+                const c = p.stateChanged;
+                storageController.pushStorageEvent(c.storageLabel, {
+                    id: c.id,
+                    label: c.storageLabel,
+                    type: "change",
+                    oldState: c.oldState,
+                    state: c.state,
+                    actionName: c.actionName,
+                    args: c.args,
+                    time: c.time
                 })
             } else if (p.stateOverrides) {
                 overrideController.setInit(p.stateOverrides)
@@ -59,3 +69,5 @@ class HostConnector {
 }
 
 export const hostConnector = new HostConnector()
+
+export const refreshHostApp = () => hostConnector.sendCommand("refresh-host");
