@@ -120,6 +120,11 @@ function SideBar() {
             )
         })
     })
+
+    const onFilterKeyUp = (e: KeyboardEvent) => {
+        storageList.actions.filter((e.target as any).value);
+    }
+
     return (
         <div class={sideBarClass()} id="side-bar">
             <div class="filter top-bar-style">
@@ -128,7 +133,7 @@ function SideBar() {
                     id={filterId}
                     tabindex={0}
                     value={filterPhrase()}
-                    onkeyup={(e) => storageList.actions.filter((e.target as any).value)}
+                    onkeyup={onFilterKeyUp}
                     placeholder="Filter"
                 ></input>
             </div>

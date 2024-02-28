@@ -14,9 +14,23 @@ const handleEvent = (event: KeyboardEvent) => {
     const c = event.code;
     const isLongPress = event.repeat;
     const alt = event.altKey;
+    const filterInFocus = storeListFilterisFocused()
 
     // https://stackoverflow.com/questions/8916620/disable-arrow-key-scrolling-in-users-browser
     if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(c) > -1) event.preventDefault();
+
+    // escape focused input
+    if (c == "Escape") {
+        if (filterInFocus) {
+            (document.activeElement as HTMLElement)?.blur?.()
+        } else {
+            setSelectedMute8StoreCache(null);
+            storageController.selectStore(null)
+        }
+    }
+
+    // input in focus (allow typing)
+    if (filterInFocus) return;
 
     // Event preview & controlls
     const nextEvent = c == "ArrowRight" || c == "ArrowUp" || c == "KeyD" || c == "KeyW";
@@ -45,22 +59,6 @@ const handleEvent = (event: KeyboardEvent) => {
         }
     }
 
-
-    if (c == "KeyE") {
-        toogleEventStackVersion()
-    }
-    if (c == "KeyR") {
-        refreshHostApp()
-    }
-    if (c == "Escape") {
-        if (storeListFilterisFocused()) {
-            (document.activeElement as HTMLElement)?.blur?.()
-        } else {
-            setSelectedMute8StoreCache(null);
-            storageController.selectStore(null)
-        }
-    }
-
     // Sidebar
     if (c == "Backquote") {
         if (focusStoreListFilter()) {
@@ -73,6 +71,12 @@ const handleEvent = (event: KeyboardEvent) => {
     }
 
     // UI
+    if (c == "KeyR") {
+        refreshHostApp()
+    }
+    if (c == "KeyE") {
+        toogleEventStackVersion()
+    }
     if (c == "KeyT") {
         toggleTimelineUI()
     }
