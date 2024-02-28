@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@alenaksu/json-viewer": "^2.0.1",
-    "@minht11/solid-virtual-container": "^0.2.1",
     "@tanstack/solid-virtual": "^3.1.2",
     "@types/prismjs": "^1.26.3",
     "cors-window": "^0.0.0-alpha.4",
